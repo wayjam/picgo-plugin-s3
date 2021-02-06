@@ -23,6 +23,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
 
       - run: npm build
 
