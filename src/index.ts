@@ -26,7 +26,7 @@ export = (ctx: picgo) => {
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
     return [
       {
-        name: 'accessKey',
+        name: 'accessKeyID',
         type: 'input',
         default: userConfig.accessKeyID,
         required: true,
@@ -34,7 +34,7 @@ export = (ctx: picgo) => {
         alias: '应用密钥 ID',
       },
       {
-        name: 'secretKey',
+        name: 'secretAccessKey',
         type: 'input',
         default: userConfig.secretAccessKey,
         required: true,
@@ -59,14 +59,14 @@ export = (ctx: picgo) => {
         name: 'region',
         type: 'input',
         default: userConfig.region,
-        required: true,
+        required: false,
         alias: '地区',
       },
       {
         name: 'endpoint',
         type: 'input',
         default: userConfig.endpoint,
-        required: true,
+        required: false,
         alias: '自定义节点',
       },
       {
@@ -74,7 +74,7 @@ export = (ctx: picgo) => {
         type: 'input',
         default: userConfig.urlPrefix,
         message: 'https://img.example.com/bucket-name/',
-        required: true,
+        required: false,
         alias: '自定义域名',
       },
     ]
@@ -87,6 +87,8 @@ export = (ctx: picgo) => {
     }
     userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
 
+
+    ctx.log.warn('666', userConfig.accessKeyID, userConfig.secretAccessKey, userConfig.region, userConfig.endpoint)
     const client = uploader.createS3Client(
       userConfig.accessKeyID,
       userConfig.secretAccessKey,
@@ -112,12 +114,13 @@ export = (ctx: picgo) => {
         const { index, url, imgURL } = result
 
         delete output[index].buffer
+        delete output[index].base64Image
         output[index].url = url
+        output[index].imgUrl = url
 
         if (userConfig.urlPrefix) {
+          output[index].url = `${userConfig.urlPrefix}/${imgURL}`
           output[index].imgUrl = `${userConfig.urlPrefix}/${imgURL}`
-        } else {
-          output[index].imgUrl = url
         }
       }
 
@@ -134,21 +137,14 @@ export = (ctx: picgo) => {
     }
   }
 
-  // const commands = (ctx: picgo) => [{
-  // label : '',
-  // key : '',
-  // name : 'test',
-  // async handle(ctx: picgo, guiApi: any) {}
-  // }]
   const register = () => {
     ctx.helper.uploader.register('aws-s3', {
       handle,
       config,
-      name: 'AWS S3 上传',
+      name: 'AWS S3',
     })
   }
   return {
-    // commands,
     register,
   }
 }

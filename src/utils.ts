@@ -34,8 +34,8 @@ class FileNameGenerator {
 
   public day(): string {
     return this.date.getDay() < 9
-    ? `0${this.date.getDay() + 1}`
-    : `${this.date.getDay() + 1}`
+      ? `0${this.date.getDay() + 1}`
+      : `${this.date.getDay() + 1}`
   }
 
   public fullName(): string {
