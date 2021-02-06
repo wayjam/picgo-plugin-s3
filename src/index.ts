@@ -87,8 +87,6 @@ export = (ctx: picgo) => {
     }
     userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
 
-
-    ctx.log.warn('666', userConfig.accessKeyID, userConfig.secretAccessKey, userConfig.region, userConfig.endpoint)
     const client = uploader.createS3Client(
       userConfig.accessKeyID,
       userConfig.secretAccessKey,

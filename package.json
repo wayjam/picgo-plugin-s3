@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
+    "pub": "npm build && npm publish",
     "patch": "npm version patch && git push origin master && git push origin --tags",
     "minor": "npm version minor && git push origin master && git push origin --tags",
     "major": "npm version major && git push origin master && git push origin --tags"
