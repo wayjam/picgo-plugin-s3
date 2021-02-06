@@ -28,7 +28,8 @@ jobs:
 
       - run: npm build
 
-      - uses: JS-DevTools/npm-publish@v1
+      - id: publish
+        uses: JS-DevTools/npm-publish@v1
         with:
           registry: 'https://registry.npmjs.org'
           check-version: true
