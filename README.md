@@ -1,21 +1,20 @@
 ## picgo-plugin-s3
 
-PicGo AWS S3 上传插件。
+[PicGo](https://github.com/PicGo/PicGo-Core) AWS S3 上传插件。
 
 - 支持 AWS S3 与其他如 backblaze b2 等兼容 S3 API 的云存储
 - 支持 PicGO GUI
 ### 配置
 
-| Key               | 说明                        | 例子                                        |
-| ----------------- | --------------------------- | ------------------------------------------- |
-| `accessKeyID`     | AWS 凭证 ID                 |                                             |
-| `secretAccessKey` | AWS 凭证密钥                |                                             |
-| `bucketName`      | S3 桶名称                   | `gallery`                                   |
-| `uploadPath`      | 上传路径                    | `{year}/{month}/{fullName}` |
-| `urlPrefix`       | 最终生成图片URL的自定义前缀 | `https://img.example.com/my-blog/`          |
-| `endpoint`        | 指定自定义终端节点          | `s3.us-west-2.amazonaws.com`                |
-| `region`          | 指定执行服务请求的区域      | `us-west-1`                                 |
-
+| Key               | 说明                        | 例子                               |
+| ----------------- | --------------------------- | ---------------------------------- |
+| `accessKeyID`     | AWS 凭证 ID                 |                                    |
+| `secretAccessKey` | AWS 凭证密钥                |                                    |
+| `bucketName`      | S3 桶名称                   | `gallery`                          |
+| `uploadPath`      | 上传路径                    | `{year}/{month}/{fullName}`        |
+| `urlPrefix`       | 最终生成图片URL的自定义前缀 | `https://img.example.com/my-blog/` |
+| `endpoint`        | 指定自定义终端节点          | `s3.us-west-2.amazonaws.com`       |
+| `region`          | 指定执行服务请求的区域      | `us-west-1`                        |
 
 
 #### 上传路径支持 Payload
@@ -31,7 +30,6 @@ PicGo AWS S3 上传插件。
 | `{md5}`      | 图片 MD5 计算值        |
 | `{sha1}`     | 图片 SHA1 计算值       |
 | `sha256`     | 图片 SHA256 计算值     |
-
 
 
 #### 例子

@@ -19,8 +19,6 @@ export = (ctx: picgo) => {
       secretAccessKey: '',
       bucketName: '',
       uploadPath: '{year}/{month}/{md5}.{extName}',
-      endpoint: '',
-      urlPrefix: '',
     }
     let userConfig = ctx.getConfig<IS3UserConfig>('picBed.aws-s3')
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -85,7 +83,9 @@ export = (ctx: picgo) => {
     if (!userConfig) {
       throw new Error("Can't find aws s3 uploader config")
     }
-    userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
+    if (userConfig.urlPrefix) {
+      userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
+    }
 
     const client = uploader.createS3Client(
       userConfig.accessKeyID,

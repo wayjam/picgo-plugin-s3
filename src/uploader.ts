@@ -65,8 +65,6 @@ function createUploadTask(
   })
 }
 
-// export default uploader
-
 export default {
   createS3Client,
   createUploadTask,
