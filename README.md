@@ -1,10 +1,14 @@
-## picgo-plugin-s3
+## picgo-plugin-s3 
+
+![github-action](https://github.com/wayjam/picgo-plugin-s3/workflows/publish/badge.svg)
+![license](https://img.shields.io/github/license/wayjam/picgo-plugin-s3)
+![npm](https://img.shields.io/npm/v/picgo-plugin-s3?style=flat)
 
 [PicGo](https://github.com/PicGo/PicGo-Core) AWS S3 上传插件。
 
 - 支持 AWS S3 与其他如 backblaze b2 等兼容 S3 API 的云存储
 - 支持 PicGO GUI
-### 配置
+### 配置 Configuration
 
 | Key               | 说明                        | 例子                               |
 | ----------------- | --------------------------- | ---------------------------------- |
@@ -17,7 +21,7 @@
 | `region`          | 指定执行服务请求的区域      | `us-west-1`                        |
 
 
-#### 上传路径支持 Payload
+**上传路径支持 payload：**
 
 | payload      | 描述                   |
 | ------------ | ---------------------- |
@@ -32,7 +36,7 @@
 | `sha256`     | 图片 SHA256 计算值     |
 
 
-#### 例子
+### 示例 Example
 
 ```json
     "aws-s3": {
@@ -46,3 +50,10 @@
 ```
 
 如果 PicGo 像以上配置，执行上传：`picgo upload sample.png`，则最终得到图片地址为：`https://img.example.com/2021/4aa4f41e38817e5fd38ac870f40dbc70.jpg`
+
+## 贡献 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+## License
+
+Released under the [MIT License](https://github.com/wayjam/picgo-plugin-s3/blob/master/LICENSE).

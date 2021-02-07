@@ -1,6 +1,6 @@
 {
   "name": "picgo-plugin-s3",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "picgo aws s3 uploader",
   "main": "dist/index.js",
   "publishConfig": {
