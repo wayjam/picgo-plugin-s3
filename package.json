@@ -1,6 +1,6 @@
 {
   "name": "picgo-plugin-s3",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "picgo aws s3 uploader",
   "main": "dist/index.js",
   "publishConfig": {
@@ -28,16 +28,18 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.10.1",
-    "aws-sdk": "^2.834.0",
     "eslint": "^5.0.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "picgo": "^1.4.0",
+    "picgo": "^1.4.0 <1.4.16",
     "tslint": "^5.10.0",
     "tslint-config-standard": "^7.1.0",
     "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.839.0"
   }
 }
