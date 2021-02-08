@@ -26,7 +26,7 @@ jobs:
         with:
           useLockFile: false
 
-      - run: npm build
+      - run: npm run build && ls -lah dist/
 
       - id: publish
         uses: JS-DevTools/npm-publish@v1
