@@ -7,3 +7,4 @@ tslint.json
 .vscode/
 src/
 .travis.yml
+.github/
