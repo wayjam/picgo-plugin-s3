@@ -81,7 +81,7 @@ export = (ctx: picgo) => {
   const handle = async (ctx: picgo) => {
     let userConfig: IS3UserConfig = ctx.getConfig('picBed.aws-s3')
     if (!userConfig) {
-      throw new Error("Can't find aws s3 uploader config")
+      throw new Error("Can't find amazon s3 uploader config")
     }
     if (userConfig.urlPrefix) {
       userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
@@ -124,10 +124,10 @@ export = (ctx: picgo) => {
 
       return ctx
     } catch (err) {
-      ctx.log.error('上传到 AWS S3 发生错误，请检查配置是否正确')
+      ctx.log.error('上传到 Amazon S3 发生错误，请检查配置是否正确')
       ctx.log.error(err)
       ctx.emit('notification', {
-        title: 'AWS S3 上传错误',
+        title: 'Amazon S3 上传错误',
         body: '请检查配置是否正确',
         text: '',
       })
@@ -139,7 +139,7 @@ export = (ctx: picgo) => {
     ctx.helper.uploader.register('aws-s3', {
       handle,
       config,
-      name: 'AWS S3',
+      name: 'Amazon S3',
     })
   }
   return {
