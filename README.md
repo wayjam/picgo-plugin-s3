@@ -9,7 +9,15 @@
 - 支持 Amazon S3 与其他如 backblaze b2 等兼容 S3 API 的云存储
 - 支持 PicGO GUI
 
+### 安装 Installation
+
+GUI 直接搜索 _S3_ 下载即可，Core 版执行 `picgo add s3` 安装。
+
 ### 配置 Configuration
+
+```sh
+picgo set uploader aws-s3
+```
 
 | Key               | 说明                          | 例子                               |
 | ----------------- | ----------------------------- | ---------------------------------- |
@@ -54,6 +62,6 @@
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## License
+## 许可证 License
 
 Released under the [MIT License](https://github.com/wayjam/picgo-plugin-s3/blob/master/LICENSE).
