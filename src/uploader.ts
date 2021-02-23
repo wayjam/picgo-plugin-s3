@@ -12,13 +12,15 @@ function createS3Client(
   accessKeyID: string,
   secretAccessKey: string,
   region: string,
-  endpoint: string
+  endpoint: string,
+  pathStyleAccess: boolean
 ): AWS.S3 {
   const s3 = new AWS.S3({
     region,
     endpoint,
     accessKeyId: accessKeyID,
     secretAccessKey: secretAccessKey,
+    s3ForcePathStyle: pathStyleAccess
   })
   return s3
 }

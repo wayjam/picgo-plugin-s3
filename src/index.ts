@@ -10,6 +10,7 @@ interface IS3UserConfig {
   region?: string
   endpoint?: string
   urlPrefix?: string
+  pathStyleAccess?: boolean
 }
 
 export = (ctx: picgo) => {
@@ -19,6 +20,7 @@ export = (ctx: picgo) => {
       secretAccessKey: '',
       bucketName: '',
       uploadPath: '{year}/{month}/{md5}.{extName}',
+      pathStyleAccess: false
     }
     let userConfig = ctx.getConfig<IS3UserConfig>('picBed.aws-s3')
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -33,7 +35,7 @@ export = (ctx: picgo) => {
       },
       {
         name: 'secretAccessKey',
-        type: 'input',
+        type: 'password',
         default: userConfig.secretAccessKey,
         required: true,
         message: 'secret access key',
@@ -75,6 +77,14 @@ export = (ctx: picgo) => {
         required: false,
         alias: '自定义域名',
       },
+      {
+        name: 'pathStyleAccess',
+        type: 'confirm',
+        default: userConfig.pathStyleAccess || false,
+        message: 'enable path-style-access or not',
+        required: false,
+        alias: 'PathStyleAccess'
+      }
     ]
   }
 
@@ -91,7 +101,8 @@ export = (ctx: picgo) => {
       userConfig.accessKeyID,
       userConfig.secretAccessKey,
       userConfig.region,
-      userConfig.endpoint
+      userConfig.endpoint,
+      userConfig.pathStyleAccess
     )
 
     const output = ctx.output
