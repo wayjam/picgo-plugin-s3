@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk'
+import FileType from 'file-type'
 import { PutObjectRequest } from 'aws-sdk/clients/s3'
 import { IImgInfo } from 'picgo/dist/src/types'
 
@@ -32,7 +33,7 @@ function createUploadTask(
   item: IImgInfo,
   index: number
 ): Promise<IUploadResult> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     if (!item.buffer && !item.base64Image) {
       reject(new Error('undefined image'))
     }
@@ -42,6 +43,10 @@ function createUploadTask(
     }
     if (item.buffer) {
       opts.Body = item.buffer
+      // 不知道是否会发生未获取到 mime 类型就上传文件的情况
+      const fileType = await FileType.fromBuffer(item.buffer)
+      opts.ContentType = fileType.mime
+
     } else {
       let data = item.base64Image
       const format = data.substring(
