@@ -14,62 +14,62 @@ class FileNameGenerator {
     'extName',
     'md5',
     'sha1',
-    'sha256',
+    'sha256'
   ]
 
-  constructor(info: IImgInfo) {
+  constructor (info: IImgInfo) {
     this.date = new Date()
     this.info = info
   }
 
-  public year(): string {
+  public year (): string {
     return `${this.date.getFullYear()}`
   }
 
-  public month(): string {
+  public month (): string {
     return this.date.getMonth() < 9
       ? `0${this.date.getMonth() + 1}`
       : `${this.date.getMonth() + 1}`
   }
 
-  public day(): string {
+  public day (): string {
     return this.date.getDate() < 9
-      ? `0${this.date.getDate() + 1}`
-      : `${this.date.getDate() + 1}`
+      ? `0${this.date.getDate()}`
+      : `${this.date.getDate()}`
   }
 
-  public fullName(): string {
+  public fullName (): string {
     return this.info.fileName
   }
 
-  public fileName(): string {
+  public fileName (): string {
     return this.info.fileName.replace(this.info.extname, '')
   }
 
-  public extName(): string {
+  public extName (): string {
     return this.info.extname.replace('.', '')
   }
 
-  public md5(): string {
+  public md5 (): string {
     return crypto.createHash('md5').update(this.imgBuffer()).digest('hex')
   }
 
-  public sha1(): string {
+  public sha1 (): string {
     return crypto.createHash('sha1').update(this.imgBuffer()).digest('hex')
   }
 
-  public sha256(): string {
+  public sha256 (): string {
     return crypto.createHash('sha256').update(this.imgBuffer()).digest('hex')
   }
 
-  private imgBuffer(): string {
+  private imgBuffer (): string {
     return this.info.base64Image
       ? this.info.base64Image
       : this.info.buffer.toString()
   }
 }
 
-export function formatPath(info: IImgInfo, format?: string): string {
+export function formatPath (info: IImgInfo, format?: string): string {
   if (!format) {
     return info.fileName
   }
