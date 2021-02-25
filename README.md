@@ -2,7 +2,7 @@
 
 ![github-action](https://github.com/wayjam/picgo-plugin-s3/workflows/publish/badge.svg)
 ![license](https://img.shields.io/github/license/wayjam/picgo-plugin-s3)
-![npm](https://img.shields.io/npm/v/picgo-plugin-s3?style=flat)
+[![npm](https://img.shields.io/npm/v/picgo-plugin-s3?style=flat)](https://www.npmjs.com/package/picgo-plugin-s3)
 
 [PicGo](https://github.com/PicGo/PicGo-Core) Amazon S3 上传插件。
 
@@ -28,6 +28,7 @@ picgo set uploader aws-s3
 | `urlPrefix`       | 最终生成图片 URL 的自定义前缀 | `https://img.example.com/my-blog/` |
 | `endpoint`        | 指定自定义终端节点            | `s3.us-west-2.amazonaws.com`       |
 | `region`          | 指定执行服务请求的区域        | `us-west-1`                        |
+| `pathStyleAccess` | 是否启用 S3 Path style | 默认为 `false`，使用 minio 请设置为 `true` |
 
 **上传路径支持 payload：**
 
