@@ -9,7 +9,7 @@ export interface IUploadResult {
   index: number
 }
 
-function createS3Client(
+function createS3Client (
   accessKeyID: string,
   secretAccessKey: string,
   region: string,
@@ -26,7 +26,7 @@ function createS3Client(
   return s3
 }
 
-function createUploadTask(
+function createUploadTask (
   s3: AWS.S3,
   bucketName: string,
   path: string,
@@ -39,7 +39,7 @@ function createUploadTask(
     }
     const opts: PutObjectRequest = {
       Key: path,
-      Bucket: bucketName,
+      Bucket: bucketName
     }
     if (item.buffer) {
       opts.Body = item.buffer
@@ -65,7 +65,7 @@ function createUploadTask(
         resolve({
           url: result.Location,
           imgURL: result.Key,
-          index,
+          index
         })
       })
       .catch((err) => reject(err))
@@ -74,5 +74,5 @@ function createUploadTask(
 
 export default {
   createS3Client,
-  createUploadTask,
+  createUploadTask
 }

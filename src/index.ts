@@ -31,7 +31,7 @@ export = (ctx: picgo) => {
         default: userConfig.accessKeyID,
         required: true,
         message: 'access key id',
-        alias: '应用密钥 ID',
+        alias: '应用密钥 ID'
       },
       {
         name: 'secretAccessKey',
@@ -39,35 +39,35 @@ export = (ctx: picgo) => {
         default: userConfig.secretAccessKey,
         required: true,
         message: 'secret access key',
-        alias: '应用密钥',
+        alias: '应用密钥'
       },
       {
         name: 'bucketName',
         type: 'input',
         default: userConfig.bucketName,
         required: true,
-        alias: '桶',
+        alias: '桶'
       },
       {
         name: 'uploadPath',
         type: 'input',
         default: userConfig.uploadPath,
         required: true,
-        alias: '文件路径',
+        alias: '文件路径'
       },
       {
         name: 'region',
         type: 'input',
         default: userConfig.region,
         required: false,
-        alias: '地区',
+        alias: '地区'
       },
       {
         name: 'endpoint',
         type: 'input',
         default: userConfig.endpoint,
         required: false,
-        alias: '自定义节点',
+        alias: '自定义节点'
       },
       {
         name: 'urlPrefix',
@@ -75,7 +75,7 @@ export = (ctx: picgo) => {
         default: userConfig.urlPrefix,
         message: 'https://img.example.com/bucket-name/',
         required: false,
-        alias: '自定义域名',
+        alias: '自定义域名'
       },
       {
         name: 'pathStyleAccess',
@@ -140,7 +140,7 @@ export = (ctx: picgo) => {
       ctx.emit('notification', {
         title: 'Amazon S3 上传错误',
         body: '请检查配置是否正确',
-        text: '',
+        text: ''
       })
       throw err
     }
@@ -150,10 +150,10 @@ export = (ctx: picgo) => {
     ctx.helper.uploader.register('aws-s3', {
       handle,
       config,
-      name: 'Amazon S3',
+      name: 'Amazon S3'
     })
   }
   return {
-    register,
+    register
   }
 }
