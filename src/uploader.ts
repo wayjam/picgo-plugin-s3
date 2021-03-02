@@ -31,7 +31,8 @@ function createUploadTask (
   bucketName: string,
   path: string,
   item: IImgInfo,
-  index: number
+  index: number,
+  forcePublic: boolean
 ): Promise<IUploadResult> {
   return new Promise(async (resolve, reject) => {
     if (!item.buffer && !item.base64Image) {
@@ -40,6 +41,9 @@ function createUploadTask (
     const opts: PutObjectRequest = {
       Key: path,
       Bucket: bucketName
+    }
+    if (forcePublic) {
+      opts.ACL = 'public-read'
     }
     if (item.buffer) {
       opts.Body = item.buffer

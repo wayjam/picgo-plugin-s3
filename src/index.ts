@@ -11,6 +11,7 @@ interface IS3UserConfig {
   endpoint?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
+  forcePublic?: boolean
 }
 
 export = (ctx: picgo) => {
@@ -84,6 +85,14 @@ export = (ctx: picgo) => {
         message: 'enable path-style-access or not',
         required: false,
         alias: 'PathStyleAccess'
+      },
+      {
+        name: 'forcePublic',
+        type: 'confirm',
+        default: userConfig.forcePublic || false,
+        message: '是否强制设置为公开',
+        required: false,
+        alias: 'ForcePublic'
       }
     ]
   }
@@ -113,7 +122,8 @@ export = (ctx: picgo) => {
         userConfig.bucketName,
         formatPath(item, userConfig.uploadPath),
         item,
-        idx
+        idx,
+        userConfig.forcePublic
       )
     )
 
