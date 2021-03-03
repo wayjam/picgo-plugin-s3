@@ -11,6 +11,7 @@ interface IS3UserConfig {
   endpoint?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
+  acl: string
 }
 
 export = (ctx: picgo) => {
@@ -20,7 +21,8 @@ export = (ctx: picgo) => {
       secretAccessKey: '',
       bucketName: '',
       uploadPath: '{year}/{month}/{md5}.{extName}',
-      pathStyleAccess: false
+      pathStyleAccess: false,
+      acl: 'public-read'
     }
     let userConfig = ctx.getConfig<IS3UserConfig>('picBed.aws-s3')
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -54,6 +56,14 @@ export = (ctx: picgo) => {
         default: userConfig.uploadPath,
         required: true,
         alias: '文件路径'
+      },
+      {
+        name: 'acl',
+        type: 'input',
+        default: userConfig.acl,
+        message: '文件访问权限',
+        required: true,
+        alias: '权限'
       },
       {
         name: 'region',
@@ -113,7 +123,8 @@ export = (ctx: picgo) => {
         userConfig.bucketName,
         formatPath(item, userConfig.uploadPath),
         item,
-        idx
+        idx,
+        userConfig.acl
       )
     )
 
