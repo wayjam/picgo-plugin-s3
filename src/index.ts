@@ -11,7 +11,7 @@ interface IS3UserConfig {
   endpoint?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
-  acl: string
+  acl?: string
 }
 
 export = (ctx: picgo) => {
@@ -94,6 +94,14 @@ export = (ctx: picgo) => {
         message: 'enable path-style-access or not',
         required: false,
         alias: 'PathStyleAccess'
+      },
+      {
+        name: 'acl',
+        type: 'input',
+        default: userConfig.acl || 'public-read',
+        message: '上传资源的访问策略',
+        required: false,
+        alias: 'ACL 访问控制列表'
       }
     ]
   }
