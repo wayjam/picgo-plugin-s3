@@ -62,10 +62,10 @@ class FileNameGenerator {
     return crypto.createHash('sha256').update(this.imgBuffer()).digest('hex')
   }
 
-  private imgBuffer (): string {
+  private imgBuffer (): string | Buffer {
     return this.info.base64Image
       ? this.info.base64Image
-      : this.info.buffer.toString()
+      : this.info.buffer
   }
 }
 
