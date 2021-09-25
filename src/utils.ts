@@ -1,4 +1,6 @@
 import crypto from 'crypto'
+import FileType from 'file-type'
+import mime from 'mime'
 import { IImgInfo } from 'picgo/dist/src/types'
 
 class FileNameGenerator {
@@ -84,4 +86,36 @@ export function formatPath (info: IImgInfo, format?: string): string {
   }
 
   return formatPath
+}
+
+export async function extractInfo(info: IImgInfo): Promise<{
+  body?: Buffer
+  contentType?: string
+  contentEncoding?: string
+}> {
+  let result: {
+    body?: Buffer
+    contentType?: string
+    contentEncoding?: string
+  } = {}
+
+  if (info.base64Image) {
+    const body = info.base64Image.replace(/^data:[/\w]+;base64,/, '')
+    result.contentType = info.base64Image.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)?.[0]
+    result.body = Buffer.from(body, 'base64')
+    result.contentEncoding = 'base64'
+  } else {
+    if (info.extname) {
+      result.contentType = mime.getType(info.extname)
+    }
+    result.body = info.buffer
+  }
+
+  // fallback to detect from buffer
+  if (!result.contentType) {
+    const fileType = await FileType.fromBuffer(result.body)
+    result.contentType = fileType?.mime
+  }
+
+  return result
 }

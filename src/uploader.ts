@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
-import FileType from 'file-type'
 import { PutObjectRequest } from 'aws-sdk/clients/s3'
 import { IImgInfo } from 'picgo/dist/src/types'
+import { extractInfo } from './utils'
 
 export interface IUploadResult {
   url: string
@@ -9,7 +9,7 @@ export interface IUploadResult {
   index: number
 }
 
-function createS3Client (
+function createS3Client(
   accessKeyID: string,
   secretAccessKey: string,
   region: string,
@@ -26,7 +26,7 @@ function createS3Client (
   return s3
 }
 
-function createUploadTask (
+function createUploadTask(
   s3: AWS.S3,
   bucketName: string,
   path: string,
@@ -38,29 +38,18 @@ function createUploadTask (
     if (!item.buffer && !item.base64Image) {
       reject(new Error('undefined image'))
     }
+
+    const { body, contentType, contentEncoding } = await extractInfo(item)
+
     const opts: PutObjectRequest = {
       Key: path,
       Bucket: bucketName,
-      ACL: acl
+      ACL: acl,
+      Body: body,
+      ContentType: contentType,
+      ContentEncoding: contentEncoding,
     }
-    if (item.buffer) {
-      opts.Body = item.buffer
-      // 不知道是否会发生未获取到 mime 类型就上传文件的情况
-      const fileType = await FileType.fromBuffer(item.buffer)
-      opts.ContentType = fileType.mime
 
-    } else {
-      let data = item.base64Image
-      const format = data.substring(
-        data.indexOf('data:') + 5,
-        data.indexOf(';base64')
-      )
-      data = data.replace(/^data:image\/\w+;base64,/, '')
-      const buf = Buffer.from(data, 'base64')
-      opts.Body = buf
-      opts.ContentEncoding = 'base64'
-      opts.ContentType = format
-    }
     s3.upload(opts)
       .promise()
       .then((result) => {

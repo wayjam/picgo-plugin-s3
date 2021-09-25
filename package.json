@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.839.0",
-    "file-type": "^16.2.0"
+    "file-type": "^16.2.0",
+    "mime": "^2.5.2"
   }
 }
