@@ -60,6 +60,16 @@ picgo set uploader aws-s3
 
 如果 PicGo 像以上配置，执行上传：`picgo upload sample.png`，则最终得到图片地址为：`https://img.example.com/2021/4aa4f41e38817e5fd38ac870f40dbc70.jpg`
 
+## 发布 Publish
+
+With the following command, a versioned commit which modifies the `version` of `package.json` would be genereated and pushed to the origin. Github Action will automatically compile this pacakage and publish it to NPM.
+
+```sh
+npm run patch
+npm run minor
+npm run major
+```
+
 ## 贡献 Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

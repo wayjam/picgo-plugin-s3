@@ -12,9 +12,9 @@
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
     "pub": "rm -rf dist/* && npm build && npm publish",
-    "patch": "npm version patch && git push origin master && git push origin --tags",
-    "minor": "npm version minor && git push origin master && git push origin --tags",
-    "major": "npm version major && git push origin master && git push origin --tags"
+    "patch": "npm version patch -m 'bump version into v%s' && git push origin main && git push origin --tags",
+    "minor": "npm version minor -m 'bump version into v%s' && git push origin main && git push origin --tags",
+    "major": "npm version major -m 'bump version into v%s' && git push origin main && git push origin --tags"
   },
   "keywords": [
     "amazon-s3",
