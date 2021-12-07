@@ -2,6 +2,7 @@ import AWS from 'aws-sdk'
 import { PutObjectRequest } from 'aws-sdk/clients/s3'
 import { IImgInfo } from 'picgo/dist/src/types'
 import { extractInfo } from './utils'
+import https from 'https'
 
 export interface IUploadResult {
   url: string
@@ -14,8 +15,18 @@ function createS3Client(
   secretAccessKey: string,
   region: string,
   endpoint: string,
-  pathStyleAccess: boolean
+  pathStyleAccess: boolean,
+  rejectUnauthorized:boolean
 ): AWS.S3 {
+  if (!rejectUnauthorized) {
+    AWS.config.update({
+      httpOptions: {
+        agent: new https.Agent({
+          rejectUnauthorized: false,
+        })
+      }
+    });
+}
   const s3 = new AWS.S3({
     region,
     endpoint,
