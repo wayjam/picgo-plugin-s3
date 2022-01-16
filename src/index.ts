@@ -11,7 +11,7 @@ interface IS3UserConfig {
   endpoint?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
-  rejectUnauthorized?:boolean
+  rejectUnauthorized?: boolean
   acl?: string
 }
 
@@ -101,7 +101,7 @@ export = (ctx: picgo) => {
         name: 'rejectUnauthorized',
         type: 'confirm',
         default: userConfig.rejectUnauthorized || true,
-        message: 'enable path-style-access or not',
+        message: '是否拒绝无效TLS证书连接',
         required: false,
         alias: 'rejectUnauthorized'
       },
