@@ -29,6 +29,7 @@ picgo set uploader aws-s3
 | `endpoint`        | 指定自定义终端节点            | `s3.us-west-2.amazonaws.com`       |
 | `region`          | 指定执行服务请求的区域        | `us-west-1`                        |
 | `pathStyleAccess` | 是否启用 S3 Path style | 默认为 `false`，使用 minio 请设置为 `true` |
+| `rejectUnauthorized` | 是否拒绝无效TLS证书连接 | 默认为 `true`，如上传失败日志显示证书问题可设置为`false`|
 | `acl` | 访问控制列表，上传资源的访问策略 | 默认为 `public-read` |
 
 **上传路径支持 payload：**

@@ -11,6 +11,7 @@ interface IS3UserConfig {
   endpoint?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
+  rejectUnauthorized?:boolean
   acl?: string
 }
 
@@ -22,6 +23,7 @@ export = (ctx: picgo) => {
       bucketName: '',
       uploadPath: '{year}/{month}/{md5}.{extName}',
       pathStyleAccess: false,
+      rejectUnauthorized: true,
       acl: 'public-read'
     }
     let userConfig = ctx.getConfig<IS3UserConfig>('picBed.aws-s3')
@@ -96,6 +98,14 @@ export = (ctx: picgo) => {
         alias: 'PathStyleAccess'
       },
       {
+        name: 'rejectUnauthorized',
+        type: 'confirm',
+        default: userConfig.rejectUnauthorized || true,
+        message: 'enable path-style-access or not',
+        required: false,
+        alias: 'rejectUnauthorized'
+      },
+      {
         name: 'acl',
         type: 'input',
         default: userConfig.acl || 'public-read',
@@ -120,7 +130,8 @@ export = (ctx: picgo) => {
       userConfig.secretAccessKey,
       userConfig.region,
       userConfig.endpoint,
-      userConfig.pathStyleAccess
+      userConfig.pathStyleAccess,
+      userConfig.rejectUnauthorized
     )
 
     const output = ctx.output
