@@ -16,7 +16,8 @@ class FileNameGenerator {
     'extName',
     'md5',
     'sha1',
-    'sha256'
+    'sha256',
+    'shake256'
   ]
 
   constructor (info: IImgInfo) {
@@ -63,7 +64,11 @@ class FileNameGenerator {
   public sha256 (): string {
     return crypto.createHash('sha256').update(this.imgBuffer()).digest('hex')
   }
-
+  
+  public shake256 (): string {
+    return crypto.createHash('shake256', {outputLength:4}).update(this.imgBuffer()).digest('hex')
+  }
+  
   private imgBuffer (): string | Buffer {
     return this.info.base64Image
       ? this.info.base64Image
