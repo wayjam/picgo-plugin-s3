@@ -1,141 +1,130 @@
-import picgo from 'picgo'
-import uploader, { IUploadResult } from './uploader'
-import { formatPath } from './utils'
-
-interface IS3UserConfig {
-  accessKeyID: string
-  secretAccessKey: string
-  bucketName: string
-  uploadPath: string
-  region?: string
-  endpoint?: string
-  urlPrefix?: string
-  pathStyleAccess?: boolean
-  rejectUnauthorized?: boolean
-  acl?: string
-}
+import picgo from "picgo"
+import uploader, { IUploadResult } from "./uploader"
+import { formatPath } from "./utils"
+import { IS3UserConfig } from "./config"
 
 export = (ctx: picgo) => {
   const config = (ctx: picgo) => {
     const defaultConfig: IS3UserConfig = {
-      accessKeyID: '',
-      secretAccessKey: '',
-      bucketName: '',
-      uploadPath: '{year}/{month}/{md5}.{extName}',
+      accessKeyID: "",
+      secretAccessKey: "",
+      bucketName: "",
+      uploadPath: "{year}/{month}/{md5}.{extName}",
       pathStyleAccess: false,
       rejectUnauthorized: true,
-      acl: 'public-read'
+      bucketEndpoint: false,
+      acl: "public-read",
     }
-    let userConfig = ctx.getConfig<IS3UserConfig>('picBed.aws-s3')
+    let userConfig = ctx.getConfig<IS3UserConfig>("picBed.aws-s3")
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
     return [
       {
-        name: 'accessKeyID',
-        type: 'input',
+        name: "accessKeyID",
+        type: "input",
         default: userConfig.accessKeyID,
         required: true,
-        message: 'access key id',
-        alias: '应用密钥 ID'
+        message: "access key id",
+        alias: "应用密钥 ID",
       },
       {
-        name: 'secretAccessKey',
-        type: 'password',
+        name: "secretAccessKey",
+        type: "password",
         default: userConfig.secretAccessKey,
         required: true,
-        message: 'secret access key',
-        alias: '应用密钥'
+        message: "secret access key",
+        alias: "应用密钥",
       },
       {
-        name: 'bucketName',
-        type: 'input',
+        name: "bucketName",
+        type: "input",
         default: userConfig.bucketName,
         required: true,
-        alias: '桶'
+        alias: "桶",
       },
       {
-        name: 'uploadPath',
-        type: 'input',
+        name: "uploadPath",
+        type: "input",
         default: userConfig.uploadPath,
         required: true,
-        alias: '文件路径'
+        alias: "文件路径",
       },
       {
-        name: 'acl',
-        type: 'input',
+        name: "acl",
+        type: "input",
         default: userConfig.acl,
-        message: '文件访问权限',
+        message: "文件访问权限",
         required: true,
-        alias: '权限'
+        alias: "权限",
       },
       {
-        name: 'region',
-        type: 'input',
+        name: "region",
+        type: "input",
         default: userConfig.region,
         required: false,
-        alias: '地区'
+        alias: "地区",
       },
       {
-        name: 'endpoint',
-        type: 'input',
+        name: "endpoint",
+        type: "input",
         default: userConfig.endpoint,
         required: false,
-        alias: '自定义节点'
+        alias: "自定义节点",
       },
       {
-        name: 'urlPrefix',
-        type: 'input',
+        name: "urlPrefix",
+        type: "input",
         default: userConfig.urlPrefix,
-        message: 'https://img.example.com/bucket-name/',
+        message: "https://img.example.com/bucket-name/",
         required: false,
-        alias: '自定义域名'
+        alias: "自定义域名",
       },
       {
-        name: 'pathStyleAccess',
-        type: 'confirm',
+        name: "pathStyleAccess",
+        type: "confirm",
         default: userConfig.pathStyleAccess || false,
-        message: 'enable path-style-access or not',
+        message: "enable path-style-access or not",
         required: false,
-        alias: 'PathStyleAccess'
+        alias: "PathStyleAccess",
       },
       {
-        name: 'rejectUnauthorized',
-        type: 'confirm',
+        name: "rejectUnauthorized",
+        type: "confirm",
         default: userConfig.rejectUnauthorized || true,
-        message: '是否拒绝无效TLS证书连接',
+        message: "是否拒绝无效TLS证书连接",
         required: false,
-        alias: 'rejectUnauthorized'
+        alias: "rejectUnauthorized",
       },
       {
-        name: 'acl',
-        type: 'input',
-        default: userConfig.acl || 'public-read',
-        message: '上传资源的访问策略',
+        name: "bucketEndpoint",
+        type: "confirm",
+        default: userConfig.bucketEndpoint || false,
+        message:
+          "提供的Endpoint是否针对单个存储桶（如果它针对根 API 端点，则为 false）",
         required: false,
-        alias: 'ACL 访问控制列表'
-      }
+        alias: "bucketEndpoint",
+      },
+      {
+        name: "acl",
+        type: "input",
+        default: userConfig.acl || "public-read",
+        message: "上传资源的访问策略",
+        required: false,
+        alias: "ACL 访问控制列表",
+      },
     ]
   }
 
   const handle = async (ctx: picgo) => {
-    let userConfig: IS3UserConfig = ctx.getConfig('picBed.aws-s3')
+    const userConfig: IS3UserConfig = ctx.getConfig("picBed.aws-s3")
     if (!userConfig) {
       throw new Error("Can't find amazon s3 uploader config")
     }
     if (userConfig.urlPrefix) {
-      userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, '')
+      userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, "")
     }
 
-    const client = uploader.createS3Client(
-      userConfig.accessKeyID,
-      userConfig.secretAccessKey,
-      userConfig.region,
-      userConfig.endpoint,
-      userConfig.pathStyleAccess,
-      userConfig.rejectUnauthorized
-    )
-
+    const client = uploader.createS3Client(userConfig)
     const output = ctx.output
-
     const tasks = output.map((item, idx) =>
       uploader.createUploadTask(
         client,
@@ -149,7 +138,7 @@ export = (ctx: picgo) => {
 
     try {
       const results: IUploadResult[] = await Promise.all(tasks)
-      for (let result of results) {
+      for (const result of results) {
         const { index, url, imgURL } = result
 
         delete output[index].buffer
@@ -165,25 +154,25 @@ export = (ctx: picgo) => {
 
       return ctx
     } catch (err) {
-      ctx.log.error('上传到 Amazon S3 发生错误，请检查配置是否正确')
+      ctx.log.error("上传到 Amazon S3 发生错误，请检查配置是否正确")
       ctx.log.error(err)
-      ctx.emit('notification', {
-        title: 'Amazon S3 上传错误',
-        body: '请检查配置是否正确',
-        text: ''
+      ctx.emit("notification", {
+        title: "Amazon S3 上传错误",
+        body: "请检查配置是否正确",
+        text: "",
       })
       throw err
     }
   }
 
   const register = () => {
-    ctx.helper.uploader.register('aws-s3', {
+    ctx.helper.uploader.register("aws-s3", {
       handle,
       config,
-      name: 'Amazon S3'
+      name: "Amazon S3",
     })
   }
   return {
-    register
+    register,
   }
 }

@@ -19,18 +19,19 @@ GUI 直接搜索 _S3_ 下载即可，Core 版执行 `picgo add s3` 安装。
 picgo set uploader aws-s3
 ```
 
-| Key               | 说明                          | 例子                               |
-| ----------------- | ----------------------------- | ---------------------------------- |
-| `accessKeyID`     | AWS 凭证 ID                   |                                    |
-| `secretAccessKey` | AWS 凭证密钥                  |                                    |
-| `bucketName`      | S3 桶名称                     | `gallery`                          |
-| `uploadPath`      | 上传路径                      | `{year}/{month}/{fullName}`        |
-| `urlPrefix`       | 最终生成图片 URL 的自定义前缀 | `https://img.example.com/my-blog/` |
-| `endpoint`        | 指定自定义终端节点            | `s3.us-west-2.amazonaws.com`       |
-| `region`          | 指定执行服务请求的区域        | `us-west-1`                        |
-| `pathStyleAccess` | 是否启用 S3 Path style | 默认为 `false`，使用 minio 请设置为 `true` |
-| `rejectUnauthorized` | 是否拒绝无效TLS证书连接 | 默认为 `true`，如上传失败日志显示证书问题可设置为`false`|
-| `acl` | 访问控制列表，上传资源的访问策略 | 默认为 `public-read` |
+| Key                  | 说明                                                                    | 例子                                                     |
+| -------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| `accessKeyID`        | AWS 凭证 ID                                                             |                                                          |
+| `secretAccessKey`    | AWS 凭证密钥                                                            |                                                          |
+| `bucketName`         | S3 桶名称                                                               | `gallery`                                                |
+| `uploadPath`         | 上传路径                                                                | `{year}/{month}/{fullName}`                              |
+| `urlPrefix`          | 最终生成图片 URL 的自定义前缀                                           | `https://img.example.com/my-blog/`                       |
+| `endpoint`           | 指定自定义终端节点                                                      | `s3.us-west-2.amazonaws.com`                             |
+| `region`             | 指定执行服务请求的区域                                                  | `us-west-1`                                              |
+| `pathStyleAccess`    | 是否启用 S3 Path style                                                  | 默认为 `false`，使用 minio 请设置为 `true`               |
+| `rejectUnauthorized` | 是否拒绝无效 TLS 证书连接                                               | 默认为 `true`，如上传失败日志显示证书问题可设置为`false` |
+| `bucketEndpoint`     | 提供的 Endpoint 是否针对单个存储桶（如果它针对根 API 端点，则为 false） | 默认为 `false`                                           |
+| `acl`                | 访问控制列表，上传资源的访问策略                                        | 默认为 `public-read`                                     |
 
 **上传路径支持 payload：**
 
