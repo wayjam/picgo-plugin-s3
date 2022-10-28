@@ -1,8 +1,8 @@
-import S3 from "aws-sdk/clients/s3"
-import { PutObjectRequest } from "aws-sdk/clients/s3"
+import { S3 } from "aws-sdk"
 import { IImgInfo } from "picgo/dist/src/types"
 import { extractInfo } from "./utils"
 import { IS3UserConfig } from "./config"
+import url from "url"
 
 export interface IUploadResult {
   url: string
@@ -11,8 +11,13 @@ export interface IUploadResult {
 }
 
 function createS3Client(opts: IS3UserConfig): S3 {
-  const endpointURL = new URL(opts.endpoint)
-  const sslEnabled = endpointURL.protocol === "https"
+  let sslEnabled = true
+  try {
+    const u = url.parse(opts.endpoint)
+    sslEnabled = u.protocol === "https:"
+  } catch {
+    // eslint-disable-next-line no-empty
+  }
   const http = sslEnabled ? require("https") : require("http")
   const s3 = new S3({
     region: opts.region,
@@ -46,7 +51,7 @@ function createUploadTask(
 
     extractInfo(item)
       .then(({ body, contentType, contentEncoding }) => {
-        const opts: PutObjectRequest = {
+        const opts: S3.PutObjectRequest = {
           Key: path,
           Bucket: bucketName,
           ACL: acl,
