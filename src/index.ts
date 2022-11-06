@@ -49,14 +49,6 @@ export = (ctx: picgo) => {
         alias: "文件路径",
       },
       {
-        name: "acl",
-        type: "input",
-        default: userConfig.acl,
-        message: "文件访问权限",
-        required: true,
-        alias: "权限",
-      },
-      {
         name: "region",
         type: "input",
         default: userConfig.region,
