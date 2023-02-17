@@ -63,7 +63,7 @@ class FileNameGenerator {
   }
   
   public md5B64Short(): string {
-    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').slice(0,11)
+    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').slice(0,7)
   }
   
   public sha1(): string {
