@@ -15,6 +15,8 @@ class FileNameGenerator {
     "fileName",
     "extName",
     "md5",
+    "md5B64",
+    "md5B64Short",
     "sha1",
     "sha256",
   ]
@@ -55,7 +57,15 @@ class FileNameGenerator {
   public md5(): string {
     return crypto.createHash("md5").update(this.imgBuffer()).digest("hex")
   }
-
+  
+  public md5B64(): string {
+    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  }
+  
+  public md5B64Short(): string {
+    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').slice(0,7)
+  }
+  
   public sha1(): string {
     return crypto.createHash("sha1").update(this.imgBuffer()).digest("hex")
   }
