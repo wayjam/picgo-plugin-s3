@@ -27,13 +27,14 @@
   "author": "WayJam So",
   "license": "MIT",
   "devDependencies": {
+    "@types/mime": "^3.0.1",
     "@types/node": "^18.7.23",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "picgo": "^1.4.0 >1.4.16",
+    "picgo": "^1.5.0",
     "prettier": "^2.7.1",
     "typescript": "^4.8.4"
   },

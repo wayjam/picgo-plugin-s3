@@ -1,5 +1,5 @@
 import { S3 } from "aws-sdk"
-import { IImgInfo } from "picgo/dist/src/types"
+import { IImgInfo } from "picgo"
 import { extractInfo } from "./utils"
 import { IS3UserConfig } from "./config"
 import url from "url"

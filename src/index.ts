@@ -1,10 +1,10 @@
-import picgo from "picgo"
+import { PicGo } from "picgo"
 import uploader, { IUploadResult } from "./uploader"
 import { formatPath } from "./utils"
 import { IS3UserConfig } from "./config"
 
-export = (ctx: picgo) => {
-  const config = (ctx: picgo) => {
+export = (ctx: PicGo) => {
+  const config = (ctx: PicGo) => {
     const defaultConfig: IS3UserConfig = {
       accessKeyID: "",
       secretAccessKey: "",
@@ -106,7 +106,7 @@ export = (ctx: picgo) => {
     ]
   }
 
-  const handle = async (ctx: picgo) => {
+  const handle = async (ctx: PicGo) => {
     const userConfig: IS3UserConfig = ctx.getConfig("picBed.aws-s3")
     if (!userConfig) {
       throw new Error("Can't find amazon s3 uploader config")

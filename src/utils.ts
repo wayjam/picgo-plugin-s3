@@ -1,7 +1,7 @@
 import crypto from "crypto"
 import FileType from "file-type"
 import mime from "mime"
-import { IImgInfo } from "picgo/dist/src/types"
+import { IImgInfo } from "picgo"
 
 class FileNameGenerator {
   date: Date
@@ -57,15 +57,27 @@ class FileNameGenerator {
   public md5(): string {
     return crypto.createHash("md5").update(this.imgBuffer()).digest("hex")
   }
-  
+
   public md5B64(): string {
-    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    return crypto
+      .createHash("md5")
+      .update(this.imgBuffer())
+      .digest("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "")
   }
-  
+
   public md5B64Short(): string {
-    return crypto.createHash("md5").update(this.imgBuffer()).digest("base64").replace(/\+/g, '-').replace(/\//g, '_').slice(0,7)
+    return crypto
+      .createHash("md5")
+      .update(this.imgBuffer())
+      .digest("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .slice(0, 7)
   }
-  
+
   public sha1(): string {
     return crypto.createHash("sha1").update(this.imgBuffer()).digest("hex")
   }

@@ -5,7 +5,10 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "plugins": ["prettier", "@typescript-eslint"],
+  "plugins": [
+    "prettier",
+    "@typescript-eslint"
+  ],
   "env": {
     "es6": true,
     "node": true

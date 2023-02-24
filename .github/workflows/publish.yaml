@@ -13,17 +13,18 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3.3.0
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3.6.0
         with:
-          node-version: 12
+          node-version: 14
           registry-url: 'https://registry.npmjs.org'
 
-      - uses: bahmutov/npm-install@v1
+      - uses: bahmutov/npm-install@v1.6.0
         with:
           useLockFile: false
 
+      - run: ls -lah && npm list
       - run: npm run build && ls -lah dist/
 
       - id: publish
