@@ -17,14 +17,13 @@ jobs:
 
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: 14
+          node-version: 16
           registry-url: 'https://registry.npmjs.org'
 
       - uses: bahmutov/npm-install@v1.6.0
         with:
           useLockFile: false
 
-      - run: ls -lah && npm list
       - run: npm run build && ls -lah dist/
 
       - id: publish
