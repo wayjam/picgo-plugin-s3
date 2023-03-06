@@ -5,6 +5,7 @@ export interface IS3UserConfig {
   uploadPath: string
   region?: string
   endpoint?: string
+  proxy?: string
   urlPrefix?: string
   pathStyleAccess?: boolean
   rejectUnauthorized?: boolean

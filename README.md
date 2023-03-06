@@ -27,6 +27,7 @@ picgo set uploader aws-s3
 | `uploadPath`         | 上传路径                                                                | `{year}/{month}/{fullName}`                              |
 | `urlPrefix`          | 最终生成图片 URL 的自定义前缀                                           | `https://img.example.com/my-blog/`                       |
 | `endpoint`           | 指定自定义终端节点                                                      | `s3.us-west-2.amazonaws.com`                             |
+| `proxy`              | 代理地址                                                                | 支持http代理，例如 `http://127.0.0.1:1080`               |
 | `region`             | 指定执行服务请求的区域                                                  | `us-west-1`                                              |
 | `pathStyleAccess`    | 是否启用 S3 Path style                                                  | 默认为 `false`，使用 minio 请设置为 `true`               |
 | `rejectUnauthorized` | 是否拒绝无效 TLS 证书连接                                               | 默认为 `true`，如上传失败日志显示证书问题可设置为`false` |
