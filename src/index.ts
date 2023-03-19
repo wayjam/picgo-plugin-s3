@@ -68,7 +68,7 @@ export = (ctx: PicGo) => {
         default: userConfig.proxy,
         required: false,
         alias: "代理",
-        message: "http://127.0.0.1:1080"
+        message: "http://127.0.0.1:1080",
       },
       {
         name: "urlPrefix",

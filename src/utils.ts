@@ -2,9 +2,9 @@ import crypto from "crypto"
 import FileType from "file-type"
 import mime from "mime"
 import { IImgInfo } from "picgo"
-import { HttpsProxyAgent, HttpProxyAgent } from 'hpagent'
-import https from 'https'
-import http from 'http'
+import { HttpsProxyAgent, HttpProxyAgent } from "hpagent"
+import https from "https"
+import http from "http"
 
 class FileNameGenerator {
   date: Date
@@ -145,56 +145,40 @@ export async function extractInfo(info: IImgInfo): Promise<{
   return result
 }
 
-const formatHttpProxy = (proxy: string | undefined): any => {
-  if (proxy === undefined || proxy === '') return undefined
-  if (/^https?:\/\//.test(proxy)) {
-    const { protocol, hostname, port } = new URL(proxy)
-    return `${protocol}//${hostname}:${port}`
-  } else {
-    const [host, port] = proxy.split(':')
-    return `http://${host}:${port}`
+function formatHttpProxyURL(url = ""): string {
+  if (!url) return ""
+
+  if (!/^https?:\/\//.test(url)) {
+    const [host, port] = url.split(":")
+    return `http://${host.replace("127.0.0.1", "localhost")}:${port}`
+  }
+
+  try {
+    const { protocol, hostname, port } = new URL(url)
+    return `${protocol}//${hostname.replace("127.0.0.1", "localhost")}:${port}`
+  } catch (e) {
+    return ""
   }
 }
 
-const getAgent = (proxy:any, https: boolean = true, rejectUnauthorized: boolean = false) => {
-  const formatProxy = formatHttpProxy(proxy)
-  if (https) {
-    return formatProxy
-      ? {
-        https: new HttpsProxyAgent({
-          keepAlive: true,
-          keepAliveMsecs: 1000,
-          rejectUnauthorized,
-          scheduling: 'lifo' as 'lifo' | 'fifo' | undefined,
-          proxy: formatProxy.replace('127.0.0.1', 'localhost')
-        })
-      }
-      : {}
-  } else {
-    return formatProxy
-      ? {
-        http: new HttpProxyAgent({
-          keepAlive: true,
-          keepAliveMsecs: 1000,
-          scheduling: 'lifo' as 'lifo' | 'fifo' | undefined,
-          proxy: formatProxy.replace('127.0.0.1', 'localhost')
-        })
-      }
-      : {}
+export function getProxyAgent(
+  proxy: string | undefined,
+  sslEnabled: boolean,
+  rejectUnauthorized: boolean
+): HttpProxyAgent | HttpsProxyAgent | undefined {
+  const formatedProxy = formatHttpProxyURL(proxy)
+  if (!formatedProxy) {
+    return undefined
   }
-}
 
-export function setAgent (proxy: string | undefined, sslEnabled: boolean, rejectUnauthorized: boolean) : HttpProxyAgent | HttpsProxyAgent | undefined {
-  if (sslEnabled) {
-    const agent = getAgent(proxy, true, rejectUnauthorized).https
-    return agent ?? new https.Agent({
-      keepAlive: true,
-      rejectUnauthorized
-    })
-  } else {
-    const agent = getAgent(proxy, false, rejectUnauthorized).http
-    return agent ?? new http.Agent({
-      keepAlive: true
-    })
+  const Agent = sslEnabled ? HttpsProxyAgent : HttpProxyAgent
+  const options = {
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    scheduling: "lifo" as "lifo" | "fifo" | undefined,
+    rejectUnauthorized,
+    proxy: formatedProxy,
   }
+
+  return new Agent(options)
 }

@@ -1,6 +1,6 @@
 import { S3 } from "aws-sdk"
 import { IImgInfo } from "picgo"
-import { extractInfo, setAgent } from "./utils"
+import { extractInfo, getProxyAgent } from "./utils"
 import { IS3UserConfig } from "./config"
 import url from "url"
 
@@ -27,7 +27,7 @@ function createS3Client(opts: IS3UserConfig): S3 {
     s3BucketEndpoint: opts.bucketEndpoint,
     sslEnabled: sslEnabled,
     httpOptions: {
-      agent: setAgent(opts.proxy, sslEnabled, opts.rejectUnauthorized)
+      agent: getProxyAgent(opts.proxy, sslEnabled, opts.rejectUnauthorized),
     },
   })
   return s3
