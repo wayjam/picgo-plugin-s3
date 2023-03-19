@@ -1,6 +1,6 @@
 import { S3 } from "aws-sdk"
 import { IImgInfo } from "picgo"
-import { extractInfo } from "./utils"
+import { extractInfo, setAgent } from "./utils"
 import { IS3UserConfig } from "./config"
 import url from "url"
 
@@ -18,7 +18,6 @@ function createS3Client(opts: IS3UserConfig): S3 {
   } catch {
     // eslint-disable-next-line no-empty
   }
-  const http = sslEnabled ? require("https") : require("http")
   const s3 = new S3({
     region: opts.region,
     endpoint: opts.endpoint,
@@ -28,9 +27,7 @@ function createS3Client(opts: IS3UserConfig): S3 {
     s3BucketEndpoint: opts.bucketEndpoint,
     sslEnabled: sslEnabled,
     httpOptions: {
-      agent: new http.Agent({
-        rejectUnauthorized: opts.rejectUnauthorized,
-      }),
+      agent: setAgent(opts.proxy, sslEnabled, opts.rejectUnauthorized)
     },
   })
   return s3

@@ -63,6 +63,14 @@ export = (ctx: PicGo) => {
         alias: "自定义节点",
       },
       {
+        name: "proxy",
+        type: "input",
+        default: userConfig.proxy,
+        required: false,
+        alias: "代理",
+        message: "http://127.0.0.1:1080"
+      },
+      {
         name: "urlPrefix",
         type: "input",
         default: userConfig.urlPrefix,
