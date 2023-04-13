@@ -1,16 +1,31 @@
-import { S3 } from "aws-sdk"
+import {
+  S3Client,
+  S3ClientConfig,
+  PutObjectCommand,
+  GetObjectCommand,
+  PutObjectCommandOutput,
+} from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import {
+  NodeHttpHandler,
+  NodeHttpHandlerOptions,
+} from "@aws-sdk/node-http-handler"
 import { IImgInfo } from "picgo"
 import { extractInfo, getProxyAgent } from "./utils"
 import { IS3UserConfig } from "./config"
 import url from "url"
+import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 
 export interface IUploadResult {
+  index: number
+  key: string
   url: string
   imgURL: string
-  index: number
+  versionId?: string
+  eTag?: string
 }
 
-function createS3Client(opts: IS3UserConfig): S3 {
+function createS3Client(opts: IS3UserConfig): S3Client {
   let sslEnabled = true
   try {
     const u = url.parse(opts.endpoint)
@@ -18,63 +33,120 @@ function createS3Client(opts: IS3UserConfig): S3 {
   } catch {
     // eslint-disable-next-line no-empty
   }
-  const s3 = new S3({
-    region: opts.region,
+
+  const httpHandlerOpts: NodeHttpHandlerOptions = {}
+  if (sslEnabled) {
+    httpHandlerOpts.httpsAgent = <HttpsProxyAgent>(
+      getProxyAgent(opts.proxy, true, opts.rejectUnauthorized)
+    )
+  } else {
+    httpHandlerOpts.httpAgent = <HttpProxyAgent>(
+      getProxyAgent(opts.proxy, false, opts.rejectUnauthorized)
+    )
+  }
+
+  const clientOptions: S3ClientConfig = {
+    region: opts.region || "auto",
     endpoint: opts.endpoint,
-    accessKeyId: opts.accessKeyID,
-    secretAccessKey: opts.secretAccessKey,
-    s3ForcePathStyle: opts.pathStyleAccess,
-    s3BucketEndpoint: opts.bucketEndpoint,
-    sslEnabled: sslEnabled,
-    httpOptions: {
-      agent: getProxyAgent(opts.proxy, sslEnabled, opts.rejectUnauthorized),
+    credentials: {
+      accessKeyId: opts.accessKeyID,
+      secretAccessKey: opts.secretAccessKey,
     },
-  })
-  return s3
+    tls: sslEnabled,
+    forcePathStyle: opts.pathStyleAccess,
+    requestHandler: new NodeHttpHandler(httpHandlerOpts),
+  }
+  const client = new S3Client(clientOptions)
+  return client
 }
 
-function createUploadTask(
-  s3: S3,
-  bucketName: string,
-  path: string,
-  item: IImgInfo,
-  index: number,
+interface createUploadTaskOpts {
+  client: S3Client
+  bucketName: string
+  path: string
+  item: IImgInfo
+  index: number
   acl: string
+  urlPrefix?: string
+}
+
+async function createUploadTask(
+  opts: createUploadTaskOpts
 ): Promise<IUploadResult> {
-  return new Promise((resolve, reject) => {
-    if (!item.buffer && !item.base64Image) {
-      reject(new Error("undefined image"))
-    }
+  if (!opts.item.buffer && !opts.item.base64Image) {
+    return Promise.reject(new Error("undefined image"))
+  }
 
-    extractInfo(item)
-      .then(({ body, contentType, contentEncoding }) => {
-        const opts: S3.PutObjectRequest = {
-          Key: path,
-          Bucket: bucketName,
-          ACL: acl,
-          Body: body,
-          ContentType: contentType,
-          ContentEncoding: contentEncoding,
-        }
+  let body: Buffer
+  let contentType: string
+  let contentEncoding: string
 
-        s3.upload(opts)
-          .promise()
-          .then((result) => {
-            resolve({
-              url: result.Location,
-              imgURL: result.Key,
-              index,
-            })
-          })
-          .catch((err) => reject(err))
-      })
-      .catch((err) => {
-        reject(err)
-      })
+  try {
+    ;({ body, contentType, contentEncoding } = await extractInfo(opts.item))
+  } catch (err) {
+    return Promise.reject(err)
+  }
+
+  const command = new PutObjectCommand({
+    Bucket: opts.bucketName,
+    Key: opts.path,
+    ACL: opts.acl,
+    Body: body,
+    ContentType: contentType,
+    ContentEncoding: contentEncoding,
   })
+
+  let output: PutObjectCommandOutput
+  try {
+    output = await opts.client.send(command)
+  } catch (err) {
+    return Promise.reject(err)
+  }
+
+  let url: string
+  if (!opts.urlPrefix) {
+    try {
+      url = await getFileURL(opts, output.ETag, output.VersionId)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  } else {
+    url = `${opts.urlPrefix}/${opts.path}`
+  }
+
+  return {
+    index: opts.index,
+    key: opts.path,
+    url: url,
+    imgURL: url,
+    versionId: output.VersionId,
+    eTag: output.ETag,
+  }
+}
+
+async function getFileURL(
+  opts: createUploadTaskOpts,
+  eTag: string,
+  versionId: string
+): Promise<string> {
+  try {
+    return await getSignedUrl(
+      opts.client,
+      new GetObjectCommand({
+        Bucket: opts.bucketName,
+        Key: opts.path,
+        IfMatch: eTag,
+        VersionId: versionId,
+      }),
+      { expiresIn: 3600 }
+    )
+  } catch (err) {
+    return Promise.reject(err)
+  }
 }
 
 export default {
   createS3Client,
   createUploadTask,
+  getFileURL,
 }

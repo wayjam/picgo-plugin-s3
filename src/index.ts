@@ -12,7 +12,6 @@ export = (ctx: PicGo) => {
       uploadPath: "{year}/{month}/{md5}.{extName}",
       pathStyleAccess: false,
       rejectUnauthorized: true,
-      bucketEndpoint: false,
       acl: "public-read",
     }
     let userConfig = ctx.getConfig<IS3UserConfig>("picBed.aws-s3")
@@ -95,15 +94,6 @@ export = (ctx: PicGo) => {
         alias: "rejectUnauthorized",
       },
       {
-        name: "bucketEndpoint",
-        type: "confirm",
-        default: userConfig.bucketEndpoint || false,
-        message:
-          "提供的Endpoint是否针对单个存储桶（如果它针对根 API 端点，则为 false）",
-        required: false,
-        alias: "bucketEndpoint",
-      },
-      {
         name: "acl",
         type: "input",
         default: userConfig.acl || "public-read",
@@ -125,44 +115,43 @@ export = (ctx: PicGo) => {
 
     const client = uploader.createS3Client(userConfig)
     const output = ctx.output
+
     const tasks = output.map((item, idx) =>
-      uploader.createUploadTask(
+      uploader.createUploadTask({
         client,
-        userConfig.bucketName,
-        formatPath(item, userConfig.uploadPath),
-        item,
-        idx,
-        userConfig.acl
-      )
+        index: idx,
+        bucketName: userConfig.bucketName,
+        path: formatPath(item, userConfig.uploadPath),
+        item: item,
+        acl: userConfig.acl,
+        urlPrefix: userConfig.urlPrefix,
+      })
     )
 
+    let results: IUploadResult[]
+
     try {
-      const results: IUploadResult[] = await Promise.all(tasks)
-      for (const result of results) {
-        const { index, url, imgURL } = result
-
-        delete output[index].buffer
-        delete output[index].base64Image
-        output[index].url = url
-        output[index].imgUrl = url
-
-        if (userConfig.urlPrefix) {
-          output[index].url = `${userConfig.urlPrefix}/${imgURL}`
-          output[index].imgUrl = `${userConfig.urlPrefix}/${imgURL}`
-        }
-      }
-
-      return ctx
+      results = await Promise.all(tasks)
     } catch (err) {
-      ctx.log.error("上传到 Amazon S3 发生错误，请检查配置是否正确")
+      ctx.log.error("上传到 S3 存储发生错误，请检查网络连接和配置是否正确")
       ctx.log.error(err)
       ctx.emit("notification", {
-        title: "Amazon S3 上传错误",
+        title: "S3 存储上传错误",
         body: "请检查配置是否正确",
         text: "",
       })
       throw err
     }
+
+    for (const result of results) {
+      const { index, url, imgURL } = result
+      delete output[index].buffer
+      delete output[index].base64Image
+      output[index].imgUrl = imgURL
+      output[index].url = url
+    }
+
+    return ctx
   }
 
   const register = () => {

@@ -9,6 +9,5 @@ export interface IS3UserConfig {
   urlPrefix?: string
   pathStyleAccess?: boolean
   rejectUnauthorized?: boolean
-  bucketEndpoint?: boolean
   acl?: string
 }

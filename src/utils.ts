@@ -3,8 +3,6 @@ import FileType from "file-type"
 import mime from "mime"
 import { IImgInfo } from "picgo"
 import { HttpsProxyAgent, HttpProxyAgent } from "hpagent"
-import https from "https"
-import http from "http"
 
 class FileNameGenerator {
   date: Date

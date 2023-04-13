@@ -29,10 +29,9 @@ picgo set uploader aws-s3
 | `endpoint`           | 指定自定义终端节点                                                      | `s3.us-west-2.amazonaws.com`                             |
 | `proxy`              | 代理地址                                                                | 支持http代理，例如 `http://127.0.0.1:1080`               |
 | `region`             | 指定执行服务请求的区域                                                  | `us-west-1`                                              |
-| `pathStyleAccess`    | 是否启用 S3 Path style                                                  | 默认为 `false`，使用 minio 请设置为 `true`               |
+| `pathStyleAccess`    | 是否启用 S3 Path style                                                  | 默认为 `false`，使用 minio 请设置为 `true` (e.g., https://s3.amazonaws.com/<bucketName>/<key> instead of https://<bucketName>.s3.amazonaws.com/<key>)              |
 | `rejectUnauthorized` | 是否拒绝无效 TLS 证书连接                                               | 默认为 `true`，如上传失败日志显示证书问题可设置为`false` |
-| `bucketEndpoint`     | 提供的 Endpoint 是否针对单个存储桶（如果它针对根 API 端点，则为 false） | 默认为 `false`                                           |
-| `acl`                | 访问控制列表，上传资源的访问策略                                        | 默认为 `public-read`                                     |
+| `acl`                | 访问控制列表，上传资源的访问策略                                        | 默认为 `public-read`, AWS 可选 `private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control`                                     |
 
 **上传路径支持 payload：**
 
