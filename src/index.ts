@@ -111,6 +111,9 @@ export = (ctx: PicGo) => {
     }
     if (userConfig.urlPrefix) {
       userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, "")
+      if (userConfig.pathStyleAccess) {
+        userConfig.urlPrefix += "/" + userConfig.bucketName
+      }
     }
 
     const client = uploader.createS3Client(userConfig)

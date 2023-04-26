@@ -10,11 +10,11 @@ import {
   NodeHttpHandler,
   NodeHttpHandlerOptions,
 } from "@aws-sdk/node-http-handler"
+import url from "url"
+import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 import { IImgInfo } from "picgo"
 import { extractInfo, getProxyAgent } from "./utils"
 import { IS3UserConfig } from "./config"
-import url from "url"
-import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 
 export interface IUploadResult {
   index: number
@@ -47,7 +47,7 @@ function createS3Client(opts: IS3UserConfig): S3Client {
 
   const clientOptions: S3ClientConfig = {
     region: opts.region || "auto",
-    endpoint: opts.endpoint,
+    endpoint: opts.endpoint || undefined,
     credentials: {
       accessKeyId: opts.accessKeyID,
       secretAccessKey: opts.secretAccessKey,
@@ -56,6 +56,7 @@ function createS3Client(opts: IS3UserConfig): S3Client {
     forcePathStyle: opts.pathStyleAccess,
     requestHandler: new NodeHttpHandler(httpHandlerOpts),
   }
+
   const client = new S3Client(clientOptions)
   return client
 }
@@ -130,7 +131,7 @@ async function getFileURL(
   versionId: string
 ): Promise<string> {
   try {
-    return await getSignedUrl(
+    const signedUrl = await getSignedUrl(
       opts.client,
       new GetObjectCommand({
         Bucket: opts.bucketName,
@@ -140,6 +141,9 @@ async function getFileURL(
       }),
       { expiresIn: 3600 }
     )
+    const urlObject = new URL(signedUrl)
+    urlObject.search = ""
+    return urlObject.href
   } catch (err) {
     return Promise.reject(err)
   }
