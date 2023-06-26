@@ -10,4 +10,5 @@ export interface IS3UserConfig {
   pathStyleAccess?: boolean
   rejectUnauthorized?: boolean
   acl?: string
+  disableBucketPrefixToURL?: boolean
 }

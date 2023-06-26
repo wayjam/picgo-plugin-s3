@@ -32,6 +32,7 @@ picgo set uploader aws-s3
 | `pathStyleAccess`    | 是否启用 S3 Path style                                                  | 默认为 `false`，使用 minio 请设置为 `true` (e.g., https://s3.amazonaws.com/<bucketName>/<key> instead of https://<bucketName>.s3.amazonaws.com/<key>)              |
 | `rejectUnauthorized` | 是否拒绝无效 TLS 证书连接                                               | 默认为 `true`，如上传失败日志显示证书问题可设置为`false` |
 | `acl`                | 访问控制列表，上传资源的访问策略                                        | 默认为 `public-read`, AWS 可选 `private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control`                                     |
+| `disableBucketPrefixToURL`  | 开启 `pathStyleAccess` 时，是否要禁用最终生成URL中添加 bucket 前缀   | 默认为 `false`  |
 
 **上传路径支持 payload：**
 

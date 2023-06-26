@@ -38,7 +38,7 @@ export = (ctx: PicGo) => {
         type: "input",
         default: userConfig.bucketName,
         required: true,
-        alias: "桶",
+        alias: "桶名",
       },
       {
         name: "uploadPath",
@@ -81,9 +81,9 @@ export = (ctx: PicGo) => {
         name: "pathStyleAccess",
         type: "confirm",
         default: userConfig.pathStyleAccess || false,
-        message: "enable path-style-access or not",
+        message: "enable s3ForcePathStyle or not",
         required: false,
-        alias: "PathStyleAccess",
+        alias: "ForcePathStyle",
       },
       {
         name: "rejectUnauthorized",
@@ -91,7 +91,7 @@ export = (ctx: PicGo) => {
         default: userConfig.rejectUnauthorized || true,
         message: "是否拒绝无效TLS证书连接",
         required: false,
-        alias: "rejectUnauthorized",
+        alias: "拒绝无效TLS证书连接",
       },
       {
         name: "acl",
@@ -100,6 +100,15 @@ export = (ctx: PicGo) => {
         message: "上传资源的访问策略",
         required: false,
         alias: "ACL 访问控制列表",
+      },
+      {
+        name: "disableBucketPrefixToURL",
+        type: "input",
+        default: userConfig.disableBucketPrefixToURL || false,
+        message:
+          "开启 `pathStyleAccess` 时，是否要禁用最终生成URL中添加 bucket 前缀",
+        required: false,
+        alias: "Bucket 前缀",
       },
     ]
   }
@@ -111,7 +120,7 @@ export = (ctx: PicGo) => {
     }
     if (userConfig.urlPrefix) {
       userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, "")
-      if (userConfig.pathStyleAccess) {
+      if (userConfig.pathStyleAccess && !userConfig.disableBucketPrefixToURL) {
         userConfig.urlPrefix += "/" + userConfig.bucketName
       }
     }
