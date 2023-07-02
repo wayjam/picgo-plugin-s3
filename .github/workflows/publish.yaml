@@ -4,7 +4,8 @@ name: publish
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    tags:
+      - v1.*
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -13,26 +14,33 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.3.0
+      - name: checkout
+        uses: actions/checkout@v3.3.0
 
-      - uses: actions/setup-node@v3.6.0
+      - name: setup-node
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: 16
           registry-url: 'https://registry.npmjs.org'
 
-      - uses: bahmutov/npm-install@v1.6.0
+      - name: npm-install
+        uses: bahmutov/npm-install@v1.6.0
         with:
           useLockFile: false
 
-      - run: npm run build && ls -lah dist/
+      - name: build
+        run: npm run build && ls -lah dist/
 
       - id: publish
+        name: publish
         uses: JS-DevTools/npm-publish@v1
+        if: github.repository == 'wayjam/picgo-plugin-s3'
         with:
           registry: 'https://registry.npmjs.org'
           check-version: true
           token: ${{ secrets.NPM_TOKEN }}
 
-      - if: steps.publish.outputs.type != 'none'
+      - name: output
+        if: steps.publish.outputs.type != 'none'
         run: |
           echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
