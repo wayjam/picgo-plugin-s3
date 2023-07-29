@@ -47,6 +47,8 @@ picgo set uploader aws-s3
 | `{md5}`      | 图片 MD5 计算值        |
 | `{sha1}`     | 图片 SHA1 计算值       |
 | `{sha256}`   | 图片 SHA256 计算值     |
+| `{timestamp}`   | Unix 时间戳     |
+| `{timestampMS}`   | Unix 时间戳（毫秒）     |
 
 ### 示例 Example
 

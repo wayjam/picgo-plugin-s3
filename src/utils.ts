@@ -20,6 +20,8 @@ class FileNameGenerator {
     "md5B64Short",
     "sha1",
     "sha256",
+    "timestamp",
+    "timestampMS",
   ]
 
   constructor(info: IImgInfo) {
@@ -85,6 +87,14 @@ class FileNameGenerator {
 
   public sha256(): string {
     return crypto.createHash("sha256").update(this.imgBuffer()).digest("hex")
+  }
+
+  public timestamp(): string {
+    return Math.floor(Date.now() / 1000).toString()
+  }
+
+  public timestampMS(): string {
+    return Date.now().toString()
   }
 
   private imgBuffer(): string | Buffer {
