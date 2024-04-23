@@ -118,10 +118,11 @@ export = (ctx: PicGo) => {
     if (!userConfig) {
       throw new Error("Can't find amazon s3 uploader config")
     }
-    if (userConfig.urlPrefix) {
-      userConfig.urlPrefix = userConfig.urlPrefix.replace(/\/?$/, "")
+    let urlPrefix = userConfig.urlPrefix
+    if (urlPrefix) {
+      urlPrefix = urlPrefix.replace(/\/?$/, "")
       if (userConfig.pathStyleAccess && !userConfig.disableBucketPrefixToURL) {
-        userConfig.urlPrefix += "/" + userConfig.bucketName
+        urlPrefix += "/" + userConfig.bucketName
       }
     }
 
@@ -136,7 +137,7 @@ export = (ctx: PicGo) => {
         path: formatPath(item, userConfig.uploadPath),
         item: item,
         acl: userConfig.acl,
-        urlPrefix: userConfig.urlPrefix,
+        urlPrefix,
       })
     )
 
