@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   PutObjectCommandOutput,
+  ObjectCannedACL,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import {
@@ -88,10 +89,12 @@ async function createUploadTask(
     return Promise.reject(err)
   }
 
+  const acl: ObjectCannedACL = opts.acl as ObjectCannedACL
+
   const command = new PutObjectCommand({
     Bucket: opts.bucketName,
     Key: opts.path,
-    ACL: opts.acl,
+    ACL: acl,
     Body: body,
     ContentType: contentType,
     ContentEncoding: contentEncoding,
