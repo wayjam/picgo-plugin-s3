@@ -1,5 +1,5 @@
 import crypto from "crypto"
-import FileType from "file-type"
+import { fromBuffer } from "file-type"
 import mime from "mime"
 import { IImgInfo } from "picgo"
 import { HttpsProxyAgent, HttpProxyAgent } from "hpagent"
@@ -133,7 +133,7 @@ export async function extractInfo(info: IImgInfo): Promise<{
   if (info.base64Image) {
     const body = info.base64Image.replace(/^data:[/\w]+;base64,/, "")
     result.contentType = info.base64Image.match(
-      /[^:]\w+\/[\w-+\d.]+(?=;|,)/
+      /[^:]\w+\/[\w-+\d.]+(?=;|,)/,
     )?.[0]
     result.body = Buffer.from(body, "base64")
     result.contentEncoding = "base64"
@@ -146,7 +146,7 @@ export async function extractInfo(info: IImgInfo): Promise<{
 
   // fallback to detect from buffer
   if (!result.contentType) {
-    const fileType = await FileType.fromBuffer(result.body)
+    const fileType = await fromBuffer(result.body)
     result.contentType = fileType?.mime
   }
 

@@ -9,7 +9,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import {
   NodeHttpHandler,
   NodeHttpHandlerOptions,
-} from "@aws-sdk/node-http-handler"
+} from "@smithy/node-http-handler"
 import url from "url"
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 import { IImgInfo } from "picgo"
@@ -72,7 +72,7 @@ interface createUploadTaskOpts {
 }
 
 async function createUploadTask(
-  opts: createUploadTaskOpts
+  opts: createUploadTaskOpts,
 ): Promise<IUploadResult> {
   if (!opts.item.buffer && !opts.item.base64Image) {
     return Promise.reject(new Error("undefined image"))
@@ -128,7 +128,7 @@ async function createUploadTask(
 async function getFileURL(
   opts: createUploadTaskOpts,
   eTag: string,
-  versionId: string
+  versionId: string,
 ): Promise<string> {
   try {
     const signedUrl = await getSignedUrl(
@@ -139,7 +139,7 @@ async function getFileURL(
         IfMatch: eTag,
         VersionId: versionId,
       }),
-      { expiresIn: 3600 }
+      { expiresIn: 3600 },
     )
     const urlObject = new URL(signedUrl)
     urlObject.search = ""
