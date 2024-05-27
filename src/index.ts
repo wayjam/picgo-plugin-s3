@@ -103,7 +103,7 @@ export = (ctx: PicGo) => {
       },
       {
         name: "disableBucketPrefixToURL",
-        type: "input",
+        type: "confirm",
         default: userConfig.disableBucketPrefixToURL || false,
         message:
           "开启 `pathStyleAccess` 时，是否要禁用最终生成URL中添加 bucket 前缀",
