@@ -13,6 +13,7 @@ export = (ctx: PicGo) => {
       pathStyleAccess: false,
       rejectUnauthorized: true,
       acl: "public-read",
+      urlSuffix: "",
     }
     let userConfig = ctx.getConfig<IS3UserConfig>("picBed.aws-s3")
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -76,6 +77,14 @@ export = (ctx: PicGo) => {
         message: "https://img.example.com/bucket-name/",
         required: false,
         alias: "自定义域名",
+      },
+      {
+        name: "urlSuffix",
+        type: "input",
+        default: userConfig.urlSuffix || "",
+        message: "例如？x-oss-process=xxx",
+        required: false,
+        alias: "设定网址后缀",
       },
       {
         name: "pathStyleAccess",
@@ -160,8 +169,8 @@ export = (ctx: PicGo) => {
       const { index, url, imgURL } = result
       delete output[index].buffer
       delete output[index].base64Image
-      output[index].imgUrl = imgURL
-      output[index].url = url
+      output[index].imgUrl = `${imgURL}${userConfig?.urlSuffix || ''}`
+      output[index].url = `${url}${userConfig?.urlSuffix || ''}`
     }
 
     return ctx

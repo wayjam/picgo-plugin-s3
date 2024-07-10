@@ -11,4 +11,5 @@ export interface IS3UserConfig {
   rejectUnauthorized?: boolean
   acl?: string
   disableBucketPrefixToURL?: boolean
+  urlSuffix?: string
 }
