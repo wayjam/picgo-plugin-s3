@@ -12,6 +12,10 @@ class FileNameGenerator {
     "year",
     "month",
     "day",
+    "hour",
+    "minute",
+    "second",
+    "millisecond",
     "fullName",
     "fileName",
     "extName",
@@ -43,6 +47,22 @@ class FileNameGenerator {
     return this.date.getDate() < 9
       ? `0${this.date.getDate()}`
       : `${this.date.getDate()}`
+  }
+
+  public hour(): string {
+    return this.date.getHours().toString().padStart(2, "0")
+  }
+
+  public minute(): string {
+    return this.date.getMinutes().toString().padStart(2, "0")
+  }
+
+  public second(): string {
+    return this.date.getSeconds().toString().padStart(2, "0")
+  }
+
+  public millisecond(): string {
+    return this.date.getMilliseconds().toString().padStart(3, "0")
   }
 
   public fullName(): string {
@@ -172,7 +192,7 @@ function formatHttpProxyURL(url = ""): string {
 export function getProxyAgent(
   proxy: string | undefined,
   sslEnabled: boolean,
-  rejectUnauthorized: boolean
+  rejectUnauthorized: boolean,
 ): HttpProxyAgent | HttpsProxyAgent | undefined {
   const formatedProxy = formatHttpProxyURL(proxy)
   if (!formatedProxy) {

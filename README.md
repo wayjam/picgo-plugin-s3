@@ -28,28 +28,32 @@ picgo set uploader aws-s3
 | `urlPrefix`                | 最终生成图片 URL 的自定义前缀                                | `https://img.example.com/my-blog/`                                                                                                          |
 | `urlSuffix`                | 最终生成图片 URL 的自定义后缀                                | `?oxx=xxx`                                                                                                                                  |
 | `endpoint`                 | 指定自定义终端节点                                        | `s3.us-west-2.amazonaws.com`                                                                                                                |
-| `proxy`                    | 代理地址                                             | 支持http代理，例如 `http://127.0.0.1:1080`                                                                                                         |
+| `proxy`                    | 代理地址                                             | 支持 http 代理，例如 `http://127.0.0.1:1080`                                                                                                         |
 | `region`                   | 指定执行服务请求的区域                                      | `us-west-1`                                                                                                                                 |
 | `pathStyleAccess`          | 是否启用 S3 Path style                               | 默认为 `false`，使用 minio 请设置为 `true` (e.g., https://s3.amazonaws.com/<bucketName>/<key> instead of https://<bucketName>.s3.amazonaws.com/<key>) |
 | `rejectUnauthorized`       | 是否拒绝无效 TLS 证书连接                                  | 默认为 `true`，如上传失败日志显示证书问题可设置为`false`                                                                                                         |
 | `acl`                      | 访问控制列表，上传资源的访问策略                                 | 默认为 `public-read`, AWS 可选 `private"                                                                                                         |"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control`                                     |
-| `disableBucketPrefixToURL` | 开启 `pathStyleAccess` 时，是否要禁用最终生成URL中添加 bucket 前缀 | 默认为 `false`                                                                                                                                 |
+| `disableBucketPrefixToURL` | 开启 `pathStyleAccess` 时，是否要禁用最终生成 URL 中添加 bucket 前缀 | 默认为 `false`                                                                                                                                 |
 
 **上传路径支持 payload：**
 
-| payload      | 描述                   |
-| ------------ | ---------------------- |
-| `{year}`     | 当前日期 - 年          |
-| `{month}`    | 当前日期 - 月          |
-| `{day}`      | 当前日期 - 日          |
-| `{fullName}` | 完整文件名（含扩展名） |
-| `{fileName}` | 文件名（不含扩展名）   |
-| `{extName}`  | 扩展名（不含`.`）      |
-| `{md5}`      | 图片 MD5 计算值        |
-| `{sha1}`     | 图片 SHA1 计算值       |
-| `{sha256}`   | 图片 SHA256 计算值     |
-| `{timestamp}`   | Unix 时间戳     |
-| `{timestampMS}`   | Unix 时间戳（毫秒）     |
+| payload         | 描述                   |
+| --------------- | ---------------------- |
+| `{year}`        | 当前日期 - 年          |
+| `{month}`       | 当前日期 - 月          |
+| `{day}`         | 当前日期 - 日          |
+| `{hour}`        | 当前日期 - 时          |
+| `{minute}`      | 当前日期 - 分          |
+| `{second}`      | 当前日期 - 秒          |
+| `{millisecond}` | 当前日期 - 毫秒        |
+| `{fullName}`    | 完整文件名（含扩展名） |
+| `{fileName}`    | 文件名（不含扩展名）   |
+| `{extName}`     | 扩展名（不含`.`）      |
+| `{md5}`         | 图片 MD5 计算值        |
+| `{sha1}`        | 图片 SHA1 计算值       |
+| `{sha256}`      | 图片 SHA256 计算值     |
+| `{timestamp}`   | Unix 时间戳            |
+| `{timestampMS}` | Unix 时间戳（毫秒）    |
 
 ### 示例 Example
 
