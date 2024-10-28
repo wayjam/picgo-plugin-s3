@@ -1,0 +1,54 @@
+name: 0x📦 Release New Version
+run-name: 📦 Release ${{ inputs.semver }}/${{ inputs.custom_version }} by @${{ github.actor }} ${{ inputs.dry_run && '(🧪 Dry-Run)' || '' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        type: choice
+        description: Which version you want to increment?
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+      custom_version:
+        description: Manual Custom Version (Special Purpose, e.g. 1.0.0)
+        type: string
+        required: false
+      dry_run:
+        description: "Dry run?"
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: ${{ inputs.semver }}
+          custom_tag: ${{ inputs.custom_version }}
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          draft: ${{ inputs.dry_run }}
+
+      - name: Dispatch Build
+        uses: benc-uk/workflow-dispatch@v1
+        if: inputs.dry_run == false
+        with:
+          workflow: publish.yml

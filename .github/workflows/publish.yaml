@@ -1,70 +1,40 @@
 name: publish
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches:
-      - main
     tags:
-      - v1.*
+      - v*
+  release:
+    types: [published, released]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    if: github.ref_ype != 'tag'
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3.3.0
-
-      - name: setup-node
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: 16
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: npm-install
-        uses: bahmutov/npm-install@v1.6.0
-        with:
-          useLockFile: false
-
-      - name: build-test
-        run: npm run build && ls -lah dist/
-
   publish:
-    if: startsWith(github.ref, 'refs/tags/v1')
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v3.3.0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: setup-node
-        uses: actions/setup-node@v3.6.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: npm-install
-        uses: bahmutov/npm-install@v1.6.0
-        with:
-          useLockFile: false
-
-      - name: build
+      - name: Build
         run: npm run build && ls -lah dist/
 
-      - id: publish
-        name: publish
-        uses: JS-DevTools/npm-publish@v1
+      - name: Publish
+        id: publish
         if: github.repository == 'wayjam/picgo-plugin-s3'
+        uses: JS-DevTools/npm-publish@v3
         with:
           registry: 'https://registry.npmjs.org'
-          check-version: true
           token: ${{ secrets.NPM_TOKEN }}
 
-      - name: output
+      - name: Output
         if: steps.publish.outputs.type != 'none'
         run: |
           echo "Version changed: ${{ steps.publish.outputs.old-version }} => ${{ steps.publish.outputs.version }}"
