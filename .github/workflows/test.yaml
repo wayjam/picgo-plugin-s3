@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.js'
+      - '**.ts'
+      - 'package.json'
   pull_request:
     types:
       - opened
@@ -13,6 +17,8 @@ on:
       - main
     paths:
       - '**.js'
+      - '**.ts'
+      - 'package.json'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,6 +35,9 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build Test
         run: npm run build && ls -lah dist/
