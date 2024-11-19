@@ -3,6 +3,7 @@ export interface IS3UserConfig {
   secretAccessKey: string
   bucketName: string
   uploadPath: string
+  trimmedUploadPath?: string
   region?: string
   endpoint?: string
   proxy?: string

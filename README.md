@@ -25,6 +25,7 @@ picgo set uploader aws-s3
 | `secretAccessKey`          | AWS 凭证密钥                                         |                                                                                                                                             |
 | `bucketName`               | S3 桶名称                                           | `gallery`                                                                                                                                   |
 | `uploadPath`               | 上传路径                                             | `{year}/{month}/{fullName}`                                                                                                                 |
+| `trimmedUploadPath`        | 裁剪后的上传路径                                       | `{year}{month}/original/{md5}.{extName}`                                                                                                    |
 | `urlPrefix`                | 最终生成图片 URL 的自定义前缀                                | `https://img.example.com/my-blog/`                                                                                                          |
 | `urlSuffix`                | 最终生成图片 URL 的自定义后缀                                | `?oxx=xxx`                                                                                                                                  |
 | `endpoint`                 | 指定自定义终端节点                                        | `s3.us-west-2.amazonaws.com`                                                                                                                |
@@ -63,6 +64,7 @@ picgo set uploader aws-s3
       "secretAccessKey": "xxxxx",
       "bucketName": "my-bucket",
       "uploadPath": "{year}/{md5}.{extName}",
+      "trimmedUploadPath": "{year}{month}/original/{md5}.{extName}",
       "endpoint": "s3.us-west-000.backblazeb2.com",
       "urlPrefix": "https://img.example.com/"
     }
