@@ -14,6 +14,7 @@ export = (ctx: PicGo) => {
       rejectUnauthorized: true,
       acl: "public-read",
       urlSuffix: "",
+      customImagePath: "", // Added customImagePath to defaultConfig
     }
     let userConfig = ctx.getConfig<IS3UserConfig>("picBed.aws-s3")
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -119,6 +120,13 @@ export = (ctx: PicGo) => {
         required: false,
         alias: "Bucket 前缀",
       },
+      {
+        name: "customImagePath", // Added customImagePath configuration option
+        type: "input",
+        default: userConfig.customImagePath,
+        required: false,
+        alias: "自定义图片路径",
+      },
     ]
   }
 
@@ -143,7 +151,7 @@ export = (ctx: PicGo) => {
         client,
         index: idx,
         bucketName: userConfig.bucketName,
-        path: formatPath(item, userConfig.uploadPath),
+        path: formatPath(item, userConfig.uploadPath), // Use uploadPath for S3 upload
         item: item,
         acl: userConfig.acl,
         urlPrefix,
@@ -170,7 +178,7 @@ export = (ctx: PicGo) => {
       delete output[index].buffer
       delete output[index].base64Image
       output[index].imgUrl = `${imgURL}${userConfig?.urlSuffix || ''}`
-      output[index].url = `${url}${userConfig?.urlSuffix || ''}`
+      output[index].url = `${urlPrefix}/${formatPath(output[index], userConfig.customImagePath || userConfig.uploadPath)}${userConfig?.urlSuffix || ''}` // Use customImagePath for returned URL
     }
 
     return ctx

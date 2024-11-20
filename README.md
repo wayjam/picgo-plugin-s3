@@ -34,6 +34,7 @@ picgo set uploader aws-s3
 | `rejectUnauthorized`       | 是否拒绝无效 TLS 证书连接                                  | 默认为 `true`，如上传失败日志显示证书问题可设置为`false`                                                                                                         |
 | `acl`                      | 访问控制列表，上传资源的访问策略                                 | 默认为 `public-read`, AWS 可选 `private"                                                                                                         |"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control`                                     |
 | `disableBucketPrefixToURL` | 开启 `pathStyleAccess` 时，是否要禁用最终生成 URL 中添加 bucket 前缀 | 默认为 `false`                                                                                                                                 |
+| `customImagePath`          | 自定义图片路径                                         | `{year}{month}/original/{md5}.{extName}`                                                                                                     |
 
 **上传路径支持 payload：**
 
@@ -64,7 +65,8 @@ picgo set uploader aws-s3
       "bucketName": "my-bucket",
       "uploadPath": "{year}/{md5}.{extName}",
       "endpoint": "s3.us-west-000.backblazeb2.com",
-      "urlPrefix": "https://img.example.com/"
+      "urlPrefix": "https://img.example.com/",
+      "customImagePath": "{year}{month}/original/{md5}.{extName}"
     }
 ```
 

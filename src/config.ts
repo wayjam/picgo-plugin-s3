@@ -12,4 +12,5 @@ export interface IS3UserConfig {
   acl?: string
   disableBucketPrefixToURL?: boolean
   urlSuffix?: string
+  customImagePath?: string
 }
