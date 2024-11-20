@@ -14,7 +14,7 @@ export = (ctx: PicGo) => {
       rejectUnauthorized: true,
       acl: "public-read",
       urlSuffix: "",
-      customImagePath: "", // Added customImagePath to defaultConfig
+      urlPath: "", // Renamed customImagePath to urlPath in defaultConfig
     }
     let userConfig = ctx.getConfig<IS3UserConfig>("picBed.aws-s3")
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -88,9 +88,9 @@ export = (ctx: PicGo) => {
         alias: "设定网址后缀",
       },
       {
-        name: "customImagePath", // Added customImagePath configuration option
+        name: "urlPath", // Renamed customImagePath to urlPath in configuration option
         type: "input",
-        default: userConfig.customImagePath,
+        default: userConfig.urlPath,
         required: false,
         alias: "自定义图片网址path",
       },
