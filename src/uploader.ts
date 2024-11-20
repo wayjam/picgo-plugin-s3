@@ -14,7 +14,7 @@ import {
 import url from "url"
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 import { IImgInfo } from "picgo"
-import { extractInfo, getProxyAgent } from "./utils"
+import { extractInfo, getProxyAgent, formatPath } from "./utils"
 import { IS3UserConfig } from "./config"
 
 export interface IUploadResult {
@@ -70,6 +70,7 @@ interface createUploadTaskOpts {
   index: number
   acl: string
   urlPrefix?: string
+  urlPath?: string
 }
 
 async function createUploadTask(
@@ -115,7 +116,7 @@ async function createUploadTask(
       return Promise.reject(err)
     }
   } else {
-    url = `${opts.urlPrefix}/${opts.path}`
+    url = `${opts.urlPrefix}/${opts.urlPath ? formatPath(opts.item, opts.urlPath) : opts.path}`
   }
 
   return {
