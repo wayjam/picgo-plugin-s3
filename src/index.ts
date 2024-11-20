@@ -88,6 +88,13 @@ export = (ctx: PicGo) => {
         alias: "设定网址后缀",
       },
       {
+        name: "customImagePath", // Added customImagePath configuration option
+        type: "input",
+        default: userConfig.customImagePath,
+        required: false,
+        alias: "自定义图片网址path",
+      },
+      {
         name: "pathStyleAccess",
         type: "confirm",
         default: userConfig.pathStyleAccess || false,
@@ -119,13 +126,6 @@ export = (ctx: PicGo) => {
           "开启 `pathStyleAccess` 时，是否要禁用最终生成URL中添加 bucket 前缀",
         required: false,
         alias: "Bucket 前缀",
-      },
-      {
-        name: "customImagePath", // Added customImagePath configuration option
-        type: "input",
-        default: userConfig.customImagePath,
-        required: false,
-        alias: "自定义图片路径",
       },
     ]
   }
@@ -178,7 +178,7 @@ export = (ctx: PicGo) => {
       delete output[index].buffer
       delete output[index].base64Image
       output[index].imgUrl = `${imgURL}${userConfig?.urlSuffix || ''}`
-      output[index].url = `${urlPrefix}/${formatPath(output[index], userConfig.customImagePath || userConfig.uploadPath)}${userConfig?.urlSuffix || ''}` // Use customImagePath for returned URL
+      output[index].url = `${url}${userConfig?.urlSuffix || ''}`
     }
 
     return ctx
