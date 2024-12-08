@@ -38,14 +38,26 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: ${{ inputs.semver }}
           custom_tag: ${{ inputs.custom_version }}
-          dry_run: 'true'
+          dry_run: "true"
 
       - name: Bump version and push tag
         if: inputs.dry_run == false
-        uses: reedyuk/npm-version@1.1.1
-        with:
-          version: ${{ steps.tag_version.outputs.new_version }}
-          git-tag-version: 'true'
+        run: |
+          # Configure Git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Update package.json version
+          npm version ${{ steps.tag_version.outputs.new_version }} --no-git-tag-version
+
+          # Commit changes
+          git add package.json
+          git commit -m "release: bump version into ${{ steps.tag_version.outputs.new_tag }}"
+          git push
+
+          # Create and push tag
+          git tag ${{ steps.tag_version.outputs.new_tag }}
+          git push origin ${{ steps.tag_version.outputs.new_tag }}
 
       - name: Create a GitHub release
         if: inputs.dry_run == false
@@ -60,4 +72,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         if: inputs.dry_run == false
         with:
-          workflow: publish.yml
+          workflow: publish.yaml
