@@ -31,15 +31,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Bump version and push tag
+      - name: Calc Version
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           default_bump: ${{ inputs.semver }}
           custom_tag: ${{ inputs.custom_version }}
+          dry_run: 'true'
+
+      - name: Bump version and push tag
+        if: inputs.dry_run == false
+        uses: reedyuk/npm-version@1.1.2
+        with:
+          version: ${{ steps.tag_version.outputs.new_version }}
+          git-tag-version: 'true'
 
       - name: Create a GitHub release
+        if: inputs.dry_run == false
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
