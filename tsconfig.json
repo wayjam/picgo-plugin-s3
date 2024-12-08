@@ -9,6 +9,9 @@
     "target": "es2017",
     "declaration": true,
     "outDir": "dist",
+    // "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    // "strict": true,
     // It's shit.
     // "baseUrl": "src",
     // "paths": {
@@ -20,11 +23,11 @@
     "lib": [
       "es2017",
       "es2015",
-      "es6",
-      "DOM"
+      "es6"
     ]
   },
   "include": [
     "./src/**/*"
-  ]
+  ],
+  "exclude": [ "node_modules", "dist"]
 }

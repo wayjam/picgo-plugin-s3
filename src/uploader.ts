@@ -3,7 +3,6 @@ import {
   S3ClientConfig,
   PutObjectCommand,
   GetObjectCommand,
-  PutObjectCommandOutput,
   ObjectCannedACL,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
@@ -21,7 +20,6 @@ export interface IUploadResult {
   index: number
   key: string
   url: string
-  imgURL: string
   versionId?: string
   eTag?: string
 }
@@ -29,10 +27,10 @@ export interface IUploadResult {
 function createS3Client(opts: IS3UserConfig): S3Client {
   let sslEnabled = true
   try {
-    const u = url.parse(opts.endpoint)
-    sslEnabled = u.protocol === "https:"
-  } catch {
-    // eslint-disable-next-line no-empty
+    const u = new URL(opts.endpoint || '')
+    sslEnabled = u.protocol === 'https:'
+  } catch (err) {
+    console.warn('Failed to parse endpoint URL, defaulting to HTTPS:', err)
   }
 
   const httpHandlerOpts: NodeHttpHandlerOptions = {}
@@ -47,36 +45,34 @@ function createS3Client(opts: IS3UserConfig): S3Client {
   }
 
   const clientOptions: S3ClientConfig = {
-    region: opts.region || "auto",
-    endpoint: opts.endpoint || undefined,
+    region: opts.region || 'auto',
+    endpoint: opts.endpoint,
     credentials: {
       accessKeyId: opts.accessKeyID,
       secretAccessKey: opts.secretAccessKey,
     },
     tls: sslEnabled,
-    forcePathStyle: opts.pathStyleAccess,
+    forcePathStyle: opts.pathStyleAccess ?? false,
     requestHandler: new NodeHttpHandler(httpHandlerOpts),
   }
 
-  const client = new S3Client(clientOptions)
-  return client
+  return new S3Client(clientOptions)
 }
 
 interface createUploadTaskOpts {
   client: S3Client
   bucketName: string
-  path: string
+  path: string // upload path
   item: IImgInfo
   index: number
   acl: string
-  urlPrefix?: string
 }
 
 async function createUploadTask(
   opts: createUploadTaskOpts,
 ): Promise<IUploadResult> {
   if (!opts.item.buffer && !opts.item.base64Image) {
-    return Promise.reject(new Error("undefined image"))
+    throw new Error('No image data provided: buffer or base64Image is required')
   }
 
   let body: Buffer
@@ -84,12 +80,12 @@ async function createUploadTask(
   let contentEncoding: string
 
   try {
-    ;({ body, contentType, contentEncoding } = await extractInfo(opts.item))
+    ({ body, contentType, contentEncoding } = await extractInfo(opts.item))
   } catch (err) {
-    return Promise.reject(err)
+    throw new Error(`Failed to extract image info: ${err instanceof Error ? err.message : String(err)}`)
   }
 
-  const acl: ObjectCannedACL = opts.acl as ObjectCannedACL
+  const acl: ObjectCannedACL = (opts.acl || 'public-read') as ObjectCannedACL
 
   const command = new PutObjectCommand({
     Bucket: opts.bucketName,
@@ -100,31 +96,20 @@ async function createUploadTask(
     ContentEncoding: contentEncoding,
   })
 
-  let output: PutObjectCommandOutput
   try {
-    output = await opts.client.send(command)
-  } catch (err) {
-    return Promise.reject(err)
-  }
-
-  let url: string
-  if (!opts.urlPrefix) {
-    try {
-      url = await getFileURL(opts, output.ETag, output.VersionId)
-    } catch (err) {
-      return Promise.reject(err)
+    const output = await opts.client.send(command)
+    
+    return {
+      index: opts.index,
+      key: opts.path,
+      url: await getFileURL(opts, output.ETag || '', output.VersionId || ''),
+      versionId: output.VersionId,
+      eTag: output.ETag,
     }
-  } else {
-    url = `${opts.urlPrefix}/${opts.path}`
-  }
-
-  return {
-    index: opts.index,
-    key: opts.path,
-    url: url,
-    imgURL: url,
-    versionId: output.VersionId,
-    eTag: output.ETag,
+  } catch (err) {
+    throw new Error(
+      `Failed to upload to S3: ${err instanceof Error ? err.message : String(err)}`
+    )
   }
 }
 
