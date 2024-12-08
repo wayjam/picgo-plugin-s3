@@ -4,6 +4,7 @@ temp.js
 package-lock.json
 tsconfig.json
 tslint.json
+pnpm-lock.yaml
 .vscode/
 src/
 .travis.yml

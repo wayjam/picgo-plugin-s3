@@ -42,7 +42,7 @@ jobs:
 
       - name: Bump version and push tag
         if: inputs.dry_run == false
-        uses: reedyuk/npm-version@1.1.2
+        uses: reedyuk/npm-version@1.1.1
         with:
           version: ${{ steps.tag_version.outputs.new_version }}
           git-tag-version: 'true'

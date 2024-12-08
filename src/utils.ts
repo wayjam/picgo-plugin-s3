@@ -7,45 +7,45 @@ import { HttpsProxyAgent, HttpProxyAgent } from "hpagent"
 import { IS3UserConfig } from "./config"
 
 class Generateor {
-  protected date: Date
+  readonly date: Date
 
   constructor() {
     this.date = new Date()
   }
 
-  public year(): string {
+  protected year(): string {
     return this.date.getFullYear().toString()
   }
 
-  public month(): string {
+  protected month(): string {
     return (this.date.getMonth() + 1).toString().padStart(2, '0')
   }
 
-  public day(): string {
+  protected day(): string {
     return this.date.getDate().toString().padStart(2, '0')
   }
 
-  public hour(): string {
+  protected hour(): string {
     return this.date.getHours().toString().padStart(2, '0')
   }
 
-  public minute(): string {
+  protected minute(): string {
     return this.date.getMinutes().toString().padStart(2, '0')
   }
 
-  public second(): string {
+  protected second(): string {
     return this.date.getSeconds().toString().padStart(2, '0')
   }
 
-  public millisecond(): string {
+  protected millisecond(): string {
     return this.date.getMilliseconds().toString().padStart(3, '0')
   }
 
-  public timestamp(): string {
+  protected timestamp(): string {
     return Math.floor(this.date.getTime() / 1000).toString()
   }
 
-  public timestampMS(): string {
+  protected timestampMS(): string {
     return this.date.getTime().toString()
   }
 
@@ -75,7 +75,7 @@ class Generateor {
 }
 
 export class FileNameGenerator extends Generateor {
-  info: IImgInfo
+  readonly info: IImgInfo
 
   constructor(info: IImgInfo) {
     super()
@@ -130,7 +130,7 @@ export class FileNameGenerator extends Generateor {
     return crypto.createHash("sha256").update(this.imgBuffer()).digest("hex")
   }
 
-  private imgBuffer(): string | Buffer {
+  public imgBuffer(): string | Buffer {
     return this.info.base64Image ? this.info.base64Image : (this.info.buffer || "")
   }
 
@@ -159,15 +159,15 @@ export class FileNameGenerator extends Generateor {
 }
 
 export class OutputURLGenerator extends Generateor {
-  private _config: IS3UserConfig
+  readonly _config: IS3UserConfig
 
-  private _protocol: string
-  private _host: string
-  private _port: string
-  private _path: string
-  private _query: string
-  private _hash: string
-  private _info: IImgInfo
+  readonly _protocol: string
+  readonly _host: string
+  readonly _port: string
+  readonly _path: string
+  readonly _query: string
+  readonly _hash: string
+  readonly _info: IImgInfo
 
   constructor(config: IS3UserConfig, info: IImgInfo) {
     super()
@@ -190,44 +190,44 @@ export class OutputURLGenerator extends Generateor {
     }
   }
 
-  private protocol(): string {
+  public protocol(): string {
     if (this._protocol) {
       return this._protocol.replace(/(:)$/, '')
     }
     return "https"
   }
 
-  private host(): string {
+  public host(): string {
     return this._host
   }
 
-  private port(): string {
+  public port(): string {
     return this._port
   }
 
-  private path(): string {
+  public path(): string {
     return this._path.replace(/^(\/)/, '')
   }
 
-  private fileName(): string {
+  public fileName(): string {
     if (this._info.fileName) {
       return this._info.fileName
     }
     return path.basename(this.path())
   }
 
-  private extName(): string {
+  public extName(): string {
     if (this._info.extname) {
       return this._info.extname.replace(/^./,'')
     }
     return path.extname(this.path()).replace(/^./,'')
   }
 
-  private dir(): string {
+  public dir(): string {
     return path.dirname(this.path())
   }
 
-  private originalURL(): string {
+  public originalURL(): string {
     let url = this._info.url
     if (!url) {
       url = this._info.imgUrl
@@ -235,19 +235,19 @@ export class OutputURLGenerator extends Generateor {
     return url
   }
 
-  private query(): string {
+  public query(): string {
     return this._query
   }
 
-  private hash(): string {
+  public hash(): string {
     return this._hash
   }
 
-  private bucket(): string {
+  public bucket(): string {
     return this._config.bucketName
   }
 
-  private legacyFormat(): string {
+  public legacyFormat(): string {
     let url = this.originalURL()
 
     let uploadPath = this._info.uploadPath || this.path()

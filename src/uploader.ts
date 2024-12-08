@@ -10,7 +10,6 @@ import {
   NodeHttpHandler,
   NodeHttpHandlerOptions,
 } from "@smithy/node-http-handler"
-import url from "url"
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent"
 import { IImgInfo } from "picgo"
 import { extractInfo, getProxyAgent } from "./utils"
