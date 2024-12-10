@@ -18,9 +18,10 @@ import { IS3UserConfig } from "./config"
 export interface IUploadResult {
   index: number
   key: string
-  url: string
+  url?: string
   versionId?: string
   eTag?: string
+  error?: Error
 }
 
 function createS3Client(opts: IS3UserConfig): S3Client {
@@ -70,21 +71,30 @@ interface createUploadTaskOpts {
 async function createUploadTask(
   opts: createUploadTaskOpts,
 ): Promise<IUploadResult> {
+  let result: IUploadResult = {
+    index: opts.index,
+    key: opts.path,
+  }
+
   if (!opts.item.buffer && !opts.item.base64Image) {
-    throw new Error('No image data provided: buffer or base64Image is required')
+    result.error =new Error(`"${opts.item.fileName}" No image data provided: buffer or base64Image is required`)
+    return result
   }
 
   let body: Buffer
   let contentType: string
   let contentEncoding: string
 
+
+
   try {
     ({ body, contentType, contentEncoding } = await extractInfo(opts.item))
   } catch (err) {
-    throw new Error(`Failed to extract image info: ${err instanceof Error ? err.message : String(err)}`)
+    result.error = new Error(`Failed to extract ${opts.item.fileName} image info: ${err instanceof Error ? err.message : String(err)}`)
+    return result
   }
 
-  const acl: ObjectCannedACL = (opts.acl || 'public-read') as ObjectCannedACL
+  const acl: ObjectCannedACL = opts.acl as ObjectCannedACL
 
   const command = new PutObjectCommand({
     Bucket: opts.bucketName,
@@ -97,19 +107,15 @@ async function createUploadTask(
 
   try {
     const output = await opts.client.send(command)
-    
-    return {
-      index: opts.index,
-      key: opts.path,
-      url: await getFileURL(opts, output.ETag || '', output.VersionId || ''),
-      versionId: output.VersionId,
-      eTag: output.ETag,
-    }
+    result.url = await getFileURL(opts, output.ETag || '', output.VersionId || '')
+    result.versionId = output.VersionId
+    result.eTag = output.ETag
   } catch (err) {
-    throw new Error(
-      `Failed to upload to S3: ${err instanceof Error ? err.message : String(err)}`
+    result.error = new Error(
+      `Failed to upload "${opts.item.fileName}" to S3: ${err instanceof Error ? err.message : String(err)}`
     )
   }
+  return result
 }
 
 async function getFileURL(

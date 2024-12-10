@@ -1,4 +1,4 @@
-import { IPicGo, IPluginConfig } from "picgo"
+import { IImgInfo, IPicGo, IPluginConfig } from "picgo"
 import uploader, { IUploadResult } from "./uploader"
 import { FileNameGenerator, OutputURLGenerator } from "./utils"
 import { getPluginConfig, loadUserConfig } from "./config"
@@ -28,23 +28,21 @@ const upload = async (ctx: IPicGo) => {
   try {
     results = await Promise.all(tasks)
   } catch (err) {
-    ctx.log.error("上传到 S3 存储发生错误，请检查网络连接和配置是否正确")
-    ctx.log.error(err)
-    ctx.emit("notification", {
-      title: "S3 存储上传错误",
-      body: "请检查配置是否正确",
-      text: "",
-    })
+    ctx.log.error("Upload S3 storage failed, please check your network connection and configuration")
     throw err
   }
 
   for (const result of results) {
-    const { index, url, key } = result
+    let { index, url, key, error } = result
     delete output[index].buffer
     delete output[index].base64Image
-    output[index].url = url
-    output[index].imgUrl = url
     output[index].uploadPath = key
+    if (error) {
+      output[index].error = error
+    } else {
+      output[index].url = url
+      output[index].imgUrl = url
+    }
   }
 
   return ctx
@@ -53,18 +51,40 @@ const upload = async (ctx: IPicGo) => {
 const afterUploadPlugins = (ctx: IPicGo) => {
   const userConfig = loadUserConfig(ctx)
 
-  ctx.output = ctx.output.map((item) => {
+  let errList: IImgInfo[] = []
+
+  ctx.output = ctx.output.reduce((acc: IImgInfo[], item) => {
     if (item.type != pluginName) {
-      return item
+      return [...acc, item]
+    }
+    if (item.error || (!item.imgUrl && !item.url)) {
+      errList.push(item)
+      return acc
     }
     const outputURLGenerator = new OutputURLGenerator(userConfig, item)
     const url = outputURLGenerator.format()
-    return {
+    return [...acc, {
       ...item,
       imgUrl: url,
       url: url,
+    }]
+  }, [])
+
+  if (errList.length > 0) {
+    const msg = `S3 Plugin ${errList.length} of ${ctx.output.length + errList.length} failed.`
+    for (const item of errList) {
+      ctx.log.error(`Item ${item.fileName}:`, item.error.message)
     }
-  })
+    ctx.emit("notification", {
+      title: "S3 Plugin Error",
+      body: msg + " Error list: " + errList.map(item => item.fileName).join(", "),
+    })
+    if (ctx.output.length > 0) {
+      ctx.log.error(msg)
+    } else {
+      throw new Error(msg)
+    }
+  }
 }
 
 const config = (ctx: IPicGo): IPluginConfig[] => {
