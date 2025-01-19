@@ -26,11 +26,14 @@ export interface IUploadResult {
 
 function createS3Client(opts: IS3UserConfig): S3Client {
   let sslEnabled = true
-  try {
-    const u = new URL(opts.endpoint || '')
-    sslEnabled = u.protocol === 'https:'
-  } catch (err) {
-    console.warn('Failed to parse endpoint URL, defaulting to HTTPS:', err)
+
+  if (opts.endpoint) {
+    try {
+      const u = new URL(opts.endpoint || '')
+      sslEnabled = u.protocol === 'https:'
+    } catch (err) {
+      console.log('Failed to parse endpoint URL, defaulting to HTTPS:', err.message)
+    }  
   }
 
   const httpHandlerOpts: NodeHttpHandlerOptions = {}
@@ -46,7 +49,7 @@ function createS3Client(opts: IS3UserConfig): S3Client {
 
   const clientOptions: S3ClientConfig = {
     region: opts.region || 'auto',
-    endpoint: opts.endpoint,
+    endpoint: opts.endpoint || undefined,
     credentials: {
       accessKeyId: opts.accessKeyID,
       secretAccessKey: opts.secretAccessKey,
@@ -54,6 +57,8 @@ function createS3Client(opts: IS3UserConfig): S3Client {
     tls: sslEnabled,
     forcePathStyle: opts.pathStyleAccess ?? false,
     requestHandler: new NodeHttpHandler(httpHandlerOpts),
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
   }
 
   return new S3Client(clientOptions)
