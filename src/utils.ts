@@ -151,8 +151,21 @@ export class FileNameGenerator extends Generateor {
     }
 
     return Object.entries(formatters).reduce(
-      (result, [key, formatter]) =>
-        result.replace(new RegExp(`{${key}}`, 'g'), formatter()),
+      (result, [key, formatter]) => {
+        const simplePattern = new RegExp(`{${key}}`, 'g')
+        const truncatePattern = new RegExp(`{${key}:(\\d+)}`, 'g')
+        
+        if (truncatePattern.test(result)) {
+          result = result.replace(truncatePattern, (match, length) => {
+            const value = formatter()
+            const truncateLength = parseInt(length, 10)
+            return value.substring(0, truncateLength)
+          })
+        } else {
+          result = result.replace(simplePattern, formatter())
+        }
+        return result
+      },
       super.format(s)
     )
   }
