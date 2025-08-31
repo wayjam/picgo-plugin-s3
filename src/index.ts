@@ -11,6 +11,7 @@ const upload = async (ctx: IPicGo) => {
   const output = ctx.output
 
   const tasks = output.map((item, idx) => {
+    item.uploadDate = new Date()
     const fileNameGenerator = new FileNameGenerator(item)
     return uploader.createUploadTask({
       client,

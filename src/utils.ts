@@ -9,8 +9,12 @@ import { IS3UserConfig } from "./config"
 class Generateor {
   readonly date: Date
 
-  constructor() {
-    this.date = new Date()
+  constructor(date?: Date) {
+    if (date) {
+      this.date = date
+    } else {
+      this.date = new Date()
+    }
   }
 
   protected year(): string {
@@ -78,7 +82,7 @@ export class FileNameGenerator extends Generateor {
   readonly info: IImgInfo
 
   constructor(info: IImgInfo) {
-    super()
+    super(info.date)
     this.info = info
   }
 
@@ -154,7 +158,7 @@ export class FileNameGenerator extends Generateor {
       (result, [key, formatter]) => {
         const simplePattern = new RegExp(`{${key}}`, 'g')
         const truncatePattern = new RegExp(`{${key}:(\\d+)}`, 'g')
-        
+
         if (truncatePattern.test(result)) {
           result = result.replace(truncatePattern, (match, length) => {
             const value = formatter()
@@ -183,7 +187,7 @@ export class OutputURLGenerator extends Generateor {
   readonly _info: IImgInfo
 
   constructor(config: IS3UserConfig, info: IImgInfo) {
-    super()
+    super(info.date)
     this._config = config
     this._info = info
 
@@ -226,18 +230,22 @@ export class OutputURLGenerator extends Generateor {
     if (this._info.fileName) {
       return this._info.fileName
     }
-    return path.basename(this.path())
+    return path.basename(this.path()) // will fallback to the uploaded filename.
   }
 
   public extName(): string {
     if (this._info.extname) {
-      return this._info.extname.replace(/^./,'')
+      return this._info.extname.replace(/^./, '')
     }
-    return path.extname(this.path()).replace(/^./,'')
+    return path.extname(this.path()).replace(/^./, '') // will fallback to the uploaded file extname.
   }
 
   public dir(): string {
     return path.dirname(this.path())
+  }
+
+  public uploadedFileName(): string {
+    return path.basename(this.path())
   }
 
   public originalURL(): string {
@@ -290,6 +298,7 @@ export class OutputURLGenerator extends Generateor {
       dir: () => this.dir(),
       fileName: () => this.fileName(),
       path: () => this.path(),
+      uploadedFileName: () => this.uploadedFileName(),
       extName: () => this.extName(),
       query: () => this.query(),
       hash: () => this.hash(),
