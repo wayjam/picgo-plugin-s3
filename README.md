@@ -83,9 +83,9 @@ picgo set uploader s3
 | `{protocol}` | URL 协议 | `http` 或 `https` |
 | `{host}` | URL 域名 | `s3.amazonaws.com` |
 | `{port}` | URL 端口 | `80` |
-| `{dir}` | 上传目录 | `my-bucket/2024/12` |
-| `{file}` | 上传后的文件名 (含扩展名) | `4aa4f41e38817e5fd38ac870f40dbc70.jpg` |
-| `{path}` | 完整路径 (`{dir}/{file}`) | `my-bucket/2024/12/4aa4f41e38817e5fd38ac870f40dbc70.jpg` |
+| `{dir}` | 上传目录 | `xxx/2024/12` |
+| `{uploadedFileName}` | 上传后的文件名 (含扩展名) | `4aa4f41e38817e5fd38ac870f40dbc70.jpg` |
+| `{path}` | 完整路径 (`{dir}/{uploadedFileName}`) | `xxx/2024/12/4aa4f41e38817e5fd38ac870f40dbc70.jpg` |
 | `{fileName}` | **源**文件名 (含扩展名) | `test.jpg` |
 | `{extName}` | **源**文件扩展名 (不含 `.`) | `jpg` |
 | `{query}` | URL 查询参数 (不含 `?`) | `height=100&width=200` |
@@ -94,7 +94,7 @@ picgo set uploader s3
 
 ##### 正则替换
 
-每个变量都支持通过正则表达式进行替换。
+每个变量都支持通过正则表达式进行替换(正则替换表达式中间不能有空格)。
 
 **语法:**
 ```

@@ -82,7 +82,7 @@ export class FileNameGenerator extends Generateor {
   readonly info: IImgInfo
 
   constructor(info: IImgInfo) {
-    super(info.date)
+    super(info.uploadDate)
     this.info = info
   }
 
@@ -187,7 +187,7 @@ export class OutputURLGenerator extends Generateor {
   readonly _info: IImgInfo
 
   constructor(config: IS3UserConfig, info: IImgInfo) {
-    super(info.date)
+    super(info.uploadDate)
     this._config = config
     this._info = info
 
