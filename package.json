@@ -9,7 +9,8 @@
   "type": "commonjs",
   "homepage": "https://github.com/wayjam/picgo-plugin-s3",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "tsc -p .",
     "dev": "tsc -w -p .",
     "pub": "rm -rf dist/* && npm build && npm publish",
@@ -29,16 +30,18 @@
   "author": "WayJam So",
   "license": "MIT",
   "devDependencies": {
-    "@types/mime": "^3.0.4",
     "@eslint/js": "^9.16.0",
+    "@types/mime": "^3.0.4",
     "@types/node": "^22.10.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
+    "@vitest/ui": "^4.0.18",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "~3.729.0",
