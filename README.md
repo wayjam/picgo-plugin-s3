@@ -70,6 +70,11 @@ picgo set uploader s3
 | `{sha1}` | 图片 SHA1 |
 | `{sha256}` | 图片 SHA256 |
 
+对于 MD5、SHA1、SHA256，支持这几种截断方式：
+
+- `{sha256:2}`：从第三个字符开始，例如 `abcd -> cd`
+- `{sha256:2,4}`：从第三个字符开始，截取长度为4，例如 `abcdefgh`
+
 ---
 
 #### 自定义输出 URL 模板 (`outputURLPattern`)
