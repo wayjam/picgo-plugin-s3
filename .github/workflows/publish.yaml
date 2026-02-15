@@ -25,7 +25,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build
         run: pnpm run build && ls -lah dist/
@@ -33,10 +33,7 @@ jobs:
       - name: Publish
         id: publish
         if: github.repository == 'wayjam/picgo-plugin-s3'
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          registry: 'https://registry.npmjs.org'
-          token: ${{ secrets.NPM_TOKEN }}
+        uses: JS-DevTools/npm-publish@v4
 
       - name: Output
         if: steps.publish.outputs.type != 'none'
