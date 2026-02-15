@@ -8,6 +8,10 @@
   },
   "type": "commonjs",
   "homepage": "https://github.com/wayjam/picgo-plugin-s3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wayjam/picgo-plugin-s3.git"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
