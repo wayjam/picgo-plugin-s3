@@ -19,7 +19,6 @@ const upload = async (ctx: IPicGo) => {
       bucketName: userConfig.bucketName,
       path: fileNameGenerator.format(userConfig.uploadPath),
       item: item,
-      acl: userConfig.acl || '',
     })
   }
   )
